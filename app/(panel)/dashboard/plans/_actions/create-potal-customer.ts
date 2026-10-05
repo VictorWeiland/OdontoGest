@@ -22,21 +22,15 @@ export async function createPortalCustomer() {
     }
 
     try {
-        const [user, subscription] = await Promise.all([
-            prisma.user.findUnique({
-                where: { id: session.user.id },
-                select: { stripe_custumer_id: true },
-            }),
-            prisma.subscription.findUnique({
-                where: { userId: session.user.id },
-                select: { id: true, status: true },
-            }),
-        ])
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id },
+            select: { stripe_custumer_id: true },
+        })
 
-        if (!user?.stripe_custumer_id || !subscription || subscription.status !== "active") {
+        if (!user?.stripe_custumer_id) {
             return {
                 url: "",
-                error: "Não foi encontrada uma assinatura ativa para cancelar."
+                error: "Não foi encontrado um cliente Stripe para esta conta."
             }
         }
 
@@ -56,27 +50,15 @@ export async function createPortalCustomer() {
         const portalSession = await stripe.billingPortal.sessions.create({
             customer: user.stripe_custumer_id,
             return_url: returnUrl.toString(),
-            flow_data: {
-                type: "subscription_cancel",
-                subscription_cancel: {
-                    subscription: subscription.id,
-                },
-                after_completion: {
-                    type: "redirect",
-                    redirect: {
-                        return_url: returnUrl.toString(),
-                    },
-                },
-            },
         })
         return {
             url: portalSession.url
         }
     } catch (err) {
-        console.error("ERRO AO CRIAR FLUXO DE CANCELAMENTO: ", err)
+        console.error("ERRO AO CRIAR PORTAL DE ASSINATURA: ", err)
         return {
             url: "",
-            error: "Não foi possível iniciar o cancelamento da assinatura. Tente novamente."
+            error: "Não foi possível abrir o gerenciamento da assinatura. Tente novamente."
         }
     }
 }

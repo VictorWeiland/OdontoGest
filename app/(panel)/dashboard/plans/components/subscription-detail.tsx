@@ -24,7 +24,7 @@ export function SubscriptionDetail({ subscription }: SubscriptionDetailProps) {
 
     const subscriptionInfo = subscriptionPlans.find(plan => plan.id === subscription.plan)
 
-    async function handleCancelSubscription() {
+    async function handleManageSubscription() {
         if (isLoading) return
 
         setIsLoading(true)
@@ -38,11 +38,11 @@ export function SubscriptionDetail({ subscription }: SubscriptionDetailProps) {
             if (portal.url) {
                 window.location.href = portal.url
             } else {
-                toast.error("Não foi possível iniciar o cancelamento da assinatura.")
+                toast.error("Não foi possível abrir o gerenciamento da assinatura.")
             }
         } catch (err) {
-            console.error("ERRO AO INICIAR CANCELAMENTO DA ASSINATURA", err)
-            toast.error("Não foi possível iniciar o cancelamento da assinatura. Tente novamente.")
+            console.error("ERRO AO ABRIR GERENCIAMENTO DA ASSINATURA", err)
+            toast.error("Não foi possível abrir o gerenciamento da assinatura. Tente novamente.")
         } finally {
             setIsLoading(false)
         }
@@ -75,11 +75,10 @@ export function SubscriptionDetail({ subscription }: SubscriptionDetailProps) {
 
             <CardFooter>
                 <Button
-                    variant="destructive"
-                    onClick={handleCancelSubscription}
+                    onClick={handleManageSubscription}
                     disabled={isLoading}
                 >
-                    {isLoading ? "Abrindo cancelamento..." : "Cancelar assinatura"}
+                    {isLoading ? "Abrindo..." : "Gerenciar assinatura"}
                 </Button>
             </CardFooter>
         </Card>

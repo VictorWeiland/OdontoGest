@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import type { Subscription } from "@/lib/generated/prisma/client";
 import {
     Card,
@@ -19,16 +20,32 @@ interface SubscriptionDetailProps {
 }
 
 export function SubscriptionDetail({ subscription }: SubscriptionDetailProps) {
+    const [isLoading, setIsLoading] = useState(false)
 
     const subscriptionInfo = subscriptionPlans.find(plan => plan.id === subscription.plan)
 
-    async function handleManageSubscription() {
-        const portal = await createPortalCustomer()
-        if(portal.error){
-            toast.error("Ocorreu um erro ao criar o portal de assinatura")
-            return;
+    async function handleCancelSubscription() {
+        if (isLoading) return
+
+        setIsLoading(true)
+        try {
+            const portal = await createPortalCustomer()
+            if (portal.error) {
+                toast.error(portal.error)
+                return
+            }
+
+            if (portal.url) {
+                window.location.href = portal.url
+            } else {
+                toast.error("Não foi possível iniciar o cancelamento da assinatura.")
+            }
+        } catch (err) {
+            console.error("ERRO AO INICIAR CANCELAMENTO DA ASSINATURA", err)
+            toast.error("Não foi possível iniciar o cancelamento da assinatura. Tente novamente.")
+        } finally {
+            setIsLoading(false)
         }
-        window.location.href = portal.sessionId;
     }
 
     return (
@@ -58,9 +75,11 @@ export function SubscriptionDetail({ subscription }: SubscriptionDetailProps) {
 
             <CardFooter>
                 <Button
-                    onClick={handleManageSubscription}
+                    variant="destructive"
+                    onClick={handleCancelSubscription}
+                    disabled={isLoading}
                 >
-                    Gerenciar assinatura
+                    {isLoading ? "Abrindo cancelamento..." : "Cancelar assinatura"}
                 </Button>
             </CardFooter>
         </Card>

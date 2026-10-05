@@ -85,6 +85,7 @@ export function ServiceList({ services, permission }: ServiceListProps) {
                         )}
                         <DialogContent>
                             <DialogService
+                                key={editingService?.id ?? "new-service"}
                                 closeModal={() => {
                                     setIsDialogOpen(false);
                                     setEditingService(null);

@@ -2,7 +2,7 @@
 
 //valor em centavos = valor em reais * 100
 //valor em reais = valor em centavos / 100
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
     DialogDescription,
     DialogHeader,
@@ -42,8 +42,24 @@ export function DialogService({ closeModal, serviceId, initialValues }: DialogSe
 
 
     const form = useDialogServiceForm({ initialValues: initialValues })
+    const { reset } = form
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const formInitialValues = useMemo(() => ({
+        name: initialValues?.name ?? "",
+        price: initialValues?.price ?? "",
+        hours: initialValues?.hours ?? "",
+        minutes: initialValues?.minutes ?? "",
+    }), [
+        initialValues?.name,
+        initialValues?.price,
+        initialValues?.hours,
+        initialValues?.minutes,
+    ])
+
+    useEffect(() => {
+        reset(formInitialValues)
+    }, [formInitialValues, reset])
 
     async function onSubmit(values: DialogServiceFormData) {
         setLoading(true);
@@ -105,6 +121,7 @@ export function DialogService({ closeModal, serviceId, initialValues }: DialogSe
         }
         toast(response.data)
         handleCloseModal();
+        router.refresh();
     }
 
 

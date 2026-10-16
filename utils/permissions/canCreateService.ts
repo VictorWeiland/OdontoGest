@@ -38,6 +38,7 @@ export async function canCreateService(subscription: Subscription | null, sessio
         };
 
     } catch (err) {
+        console.error("Falha ao verificar permissão de serviço:", err)
         return {
             hasPermission: false,
             planId: "EXPIRED",

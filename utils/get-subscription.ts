@@ -8,15 +8,9 @@ export async function getSubscription({ userId }: { userId: string }) {
         return null;
     }
 
-    try {
-        const subscription = await prisma.subscription.findFirst({
-            where: {
-                userId: userId
-            }
-        })
-        return subscription;
-
-    } catch (err) {
-        return null;
-    }
+    return prisma.subscription.findFirst({
+        where: {
+            userId: userId
+        }
+    })
 }

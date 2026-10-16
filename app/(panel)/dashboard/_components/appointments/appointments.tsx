@@ -3,7 +3,7 @@ import { AppointmentsList } from "./appoitments-list"
 
 export async function Appointments({ userId }: { userId: string }) {
 
-    const { times, userId: id } = await getTimesClinic({ userId: userId })
+    const { times } = await getTimesClinic({ userId })
 
 
 

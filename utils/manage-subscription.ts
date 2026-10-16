@@ -1,5 +1,4 @@
 import prisma from '@/lib/prisma'
-import Stripe from 'stripe'
 import { stripe } from '@/utils/stripe'
 import { Plan } from '@/lib/generated/prisma/enums'
 

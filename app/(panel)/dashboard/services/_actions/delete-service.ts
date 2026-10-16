@@ -43,6 +43,7 @@ export async function  deleteService(formData: FromSchema){
                 data: "Serviço deletado com sucesso"
             }
         }catch(err){
+            console.error("Falha ao excluir serviço:", err)
             return{
                 error: "Falha ao deletar serviço!",
             }

@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import type { Session } from "next-auth";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -17,25 +16,23 @@ import { LogIn, Menu } from "lucide-react";
 import { useSession } from 'next-auth/react'
 import { handleRegister } from '../_actions/login'
 
+const navItems = [
+    {href: "#profissionais", label: "Profissionais"},
+]
 
-export function Header() {
-    const{ data: session, status } = useSession();
-    const [isOpen, setIsOpen] = useState(false);
+interface NavLinksProps {
+    session: Session | null
+    status: "loading" | "authenticated" | "unauthenticated"
+    closeMenu: () => void
+    onLogin: () => Promise<void>
+}
 
-    const navItems = [
-        {href: "#profissionais", label: "Profissionais"},
-        /*{href: "/contatos", label: "Contatos"}*/
-    ]
-
-    async function handleLogin() {
-        await handleRegister("google")
-    }
-
-    const NavLinks = () =>(
+function NavLinks({ session, status, closeMenu, onLogin }: NavLinksProps) {
+    return (
         <>
         {navItems.map((item)=>(
             <Button  
-                onClick={() => setIsOpen(false)}              
+                onClick={closeMenu}
                 key={item.href}
                 className="bg-transparent hover:bg-transparent text-black shadow-none"
             >
@@ -54,13 +51,22 @@ export function Header() {
                 Acessar clínica
             </Link>
         ):(
-            <Button onClick={handleLogin}>
+            <Button onClick={onLogin}>
                 <LogIn />
                 Portal da Clínica
             </Button>
         )}
         </>
     )
+}
+
+export function Header() {
+    const{ data: session, status } = useSession();
+    const [isOpen, setIsOpen] = useState(false);
+
+    async function handleLogin() {
+        await handleRegister("google")
+    }
 
     return (
         <header 
@@ -75,7 +81,7 @@ export function Header() {
                 </Link>
 
                 <nav className="hidden md:flex items-center space-x-04">
-                    <NavLinks />
+                    <NavLinks session={session} status={status} closeMenu={() => setIsOpen(false)} onLogin={handleLogin} />
                 </nav>
                 <Sheet open={isOpen} onOpenChange={setIsOpen}>
                     <SheetTrigger
@@ -96,7 +102,7 @@ export function Header() {
                             <SheetDescription>Veja nossos links</SheetDescription>
                         </SheetHeader>
                         <nav className="flex flex-col space-y-4 mt-6">
-                            <NavLinks />
+                            <NavLinks session={session} status={status} closeMenu={() => setIsOpen(false)} onLogin={handleLogin} />
                         </nav>
                     </SheetContent>
                 </Sheet>

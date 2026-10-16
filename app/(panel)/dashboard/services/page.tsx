@@ -7,13 +7,13 @@ export default async function Services(){
 
       const session = await getSession();
       
-      if(!session){
+      if(!session?.user?.id){
         redirect("/")
       }
     
     return(
       <Suspense fallback={<div>Carregando...</div>}>
-        <ServicesContent userId={session.user?.id!}/>
+        <ServicesContent userId={session.user.id}/>
       </Suspense>
     )
 }

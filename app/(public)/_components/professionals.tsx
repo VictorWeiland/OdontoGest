@@ -6,14 +6,23 @@ import { ArrowRight } from "lucide-react";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { PremiumCardBadge } from "./premium-badge";
 
-type UserWithSubscription = Prisma.UserGetPayload<{
-    include: {
-        subscription: true
+type PublicClinic = Prisma.UserGetPayload<{
+    select: {
+        id: true
+        name: true
+        image: true
+        address: true
+        subscription: {
+            select: {
+                status: true
+                plan: true
+            }
+        }
     }
 }>
 
 interface ProfessionalsProps {
-    professionals: UserWithSubscription[]
+    professionals: PublicClinic[]
 }
 
 export function Professionals({ professionals }: ProfessionalsProps) {

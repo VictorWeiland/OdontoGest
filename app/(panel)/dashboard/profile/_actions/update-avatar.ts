@@ -37,6 +37,7 @@ export async function updateProfileAvatar({ avatarUrl }: { avatarUrl: string }) 
         }
 
     } catch (err) {
+        console.error("Falha ao atualizar avatar:", err)
         return{
             error: "Falha ao alterar imagem"
         }

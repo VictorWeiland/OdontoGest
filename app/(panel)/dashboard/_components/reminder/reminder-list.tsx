@@ -36,6 +36,7 @@ export function ReminderList({ reminder }: ReminderListProps) {
 
         if (response.error) {
             toast.error(response.error)
+            return
         }
         toast.success(response.data)
         router.refresh();
@@ -79,7 +80,7 @@ export function ReminderList({ reminder }: ReminderListProps) {
                         className="h-[340px] lg:max-h-[calc(100vh-15rem)] pr-0 w-full flex-1"
                     >
                         {reminder.map((item) => (
-                            <article className="flex flex-wrap flex-row items-center justify-between py-2 bg-yellow-100 mb-2 px-2 rounded-md">
+                            <article key={item.id} className="flex flex-wrap flex-row items-center justify-between py-2 bg-yellow-100 mb-2 px-2 rounded-md">
                                 <p className="text-sm lg:text-base">{item.description}</p>
                                 <Button
                                     className="bg-red-500 hover:bg-red-400 shadow-none rounded-full p-2"

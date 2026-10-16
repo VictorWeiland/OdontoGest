@@ -19,7 +19,7 @@ export default async function Home() {
 
         <Hero/>
 
-        <Professionals professionals={professionals || []}/>
+        <Professionals professionals={professionals}/>
 
         <Footer/>
       </div>

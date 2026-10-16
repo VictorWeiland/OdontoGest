@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
-import { Trykker } from "next/font/google"
+import { auth } from "@/lib/auth"
 import { z } from 'zod'
 
 const formSchema = z.object({
@@ -12,6 +12,13 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>
 
 export async function deleteReminder(formData: FormSchema) {
+    const session = await auth()
+    if (!session?.user?.id) {
+        return {
+            error: "Usuário não encontrado."
+        }
+    }
+
     const schema = formSchema.safeParse(formData)
     if (!schema.success) {
         return {
@@ -20,11 +27,18 @@ export async function deleteReminder(formData: FormSchema) {
     }
 
     try {
-        await prisma.reminder.delete({
+        const result = await prisma.reminder.deleteMany({
             where: {
-                id: formData.reminderId
+                id: formData.reminderId,
+                userId: session.user.id,
             }
         })
+
+        if (result.count === 0) {
+            return {
+                error: "Lembrete não encontrado."
+            }
+        }
 
         revalidatePath("/dashboard")
 
@@ -32,6 +46,7 @@ export async function deleteReminder(formData: FormSchema) {
             data: "Lembrete deletado com sucesso"
         }
     } catch (err) {
+        console.error("Falha ao deletar lembrete:", err)
         return {
             error: "Não foi possivel deletar o lembrete."
         }

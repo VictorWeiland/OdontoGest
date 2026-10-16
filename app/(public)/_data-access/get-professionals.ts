@@ -1,21 +1,39 @@
 "use server"
 
 import prisma from "@/lib/prisma"
+import type { Prisma } from "@/lib/generated/prisma/client"
 
-export async function getProfessionals() {
-    try {
-        const professionals = await prisma.user.findMany({
+type PublicClinic = Prisma.UserGetPayload<{
+    select: {
+        id: true
+        name: true
+        image: true
+        address: true
+        subscription: {
+            select: {
+                status: true
+                plan: true
+            }
+        }
+    }
+}>
+
+export async function getProfessionals(): Promise<PublicClinic[]> {
+    return prisma.user.findMany({
             where:{
                 status: true,
             },
-            include:{
-                subscription: true,
+            select: {
+                id: true,
+                name: true,
+                image: true,
+                address: true,
+                subscription: {
+                    select: {
+                        status: true,
+                        plan: true,
+                    },
+                },
             }
-        })
-
-        return professionals;
-        
-    } catch (err) {
-        return[]
-    }
+    })
 }

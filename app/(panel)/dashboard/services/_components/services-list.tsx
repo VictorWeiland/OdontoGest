@@ -3,9 +3,6 @@ import { useState } from 'react'
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
 import { DialogService } from './dialog-service'
@@ -13,7 +10,6 @@ import { DialogService } from './dialog-service'
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle
 } from '@/components/ui/card'

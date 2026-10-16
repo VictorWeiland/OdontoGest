@@ -1,12 +1,11 @@
 "use client"
 
 import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle
 } from '@/components/ui/card'
@@ -42,7 +41,7 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [detailAppointment, setDetailAppointment] = useState<AppointmentWithService | null>(null)
 
-    const { data, isLoading, refetch } = useQuery({
+    const { data, isLoading, isError, refetch } = useQuery({
         queryKey: ["get-appointments", date],
         queryFn: async () => {
             let activeDate = date;
@@ -52,17 +51,12 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
                 activeDate = today;
             }
 
-            const url = `${process.env.NEXT_PUBLIC_URL}/api/clinic/appointments?date=${activeDate}`
-
-            const response = await fetch(url)
-
-            const json = await response.json() as AppointmentWithService[];
-
+            const response = await fetch(`/api/clinic/appointments?date=${activeDate}`)
 
             if (!response.ok) {
-                return []
+                throw new Error(`Falha ao carregar agendamentos (${response.status})`)
             }
-            return json
+            return await response.json() as AppointmentWithService[]
         },
         staleTime: 20000,
         refetchInterval: 60000,
@@ -123,6 +117,10 @@ export function AppointmentsList({ times }: AppointmentsListProps) {
                     <ScrollArea className="h-[calc(100vh-20rem)] lg:h-[calc(100vh-15rem)] pr-4">
                         {isLoading ? (
                             <p>Carregando agenda...</p>
+                        ) : isError ? (
+                            <p role="alert" className="text-sm text-red-600">
+                                Não foi possível carregar os agendamentos. Tente novamente.
+                            </p>
                         ) : (
                             times.map((slot) => {
                                 const occupant = occupantMap[slot]

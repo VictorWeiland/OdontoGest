@@ -10,7 +10,6 @@ import {
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField, FormItem,
     FormLabel,
     FormMessage,
@@ -25,7 +24,6 @@ import {
     SelectGroup
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
-import Image from 'next/image'
 import {
     Dialog,
     DialogContent,
@@ -35,7 +33,6 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog'
 
-import imgTest from '../../../../../public/foto1.png'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import { cn } from "cn"
@@ -82,7 +79,7 @@ export function ProfileContent({user}: ProfileContentProps) {
     const[dialogIsOpen, setDialogIsOpen] = React.useState(false)
     const{update} = useSession();
 
-    const [alignItemWithTrigger, setAlignItemWithTrigger] = React.useState(true)
+    const alignItemWithTrigger = true
 
 
     const form = useProfileForm({

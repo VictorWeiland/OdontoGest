@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import getSession from "@/lib/getSession"
+import prisma from "@/lib/prisma"
 import { getPermissionUserToReports } from "./_data-access/get-permission-reports"
 import { getReportsData } from "./_data-access/get-reports-data"
 import { AverageTicketByDay } from "./_components/average-ticket-by-day"
@@ -26,8 +27,19 @@ function isValidDate(value: string) {
     return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value
 }
 
-function getDefaultDateRange() {
-    const today = new Date().toISOString().slice(0, 10)
+function getDefaultDateRange(timeZone: string | null) {
+    const dateParts = Object.fromEntries(
+        new Intl.DateTimeFormat("en-CA", {
+            timeZone: timeZone ?? "UTC",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        })
+            .formatToParts(new Date())
+            .map(({ type, value }) => [type, value])
+    )
+    const today = `${dateParts.year}-${dateParts.month}-${dateParts.day}`
+
     return {
         startDate: `${today.slice(0, 7)}-01`,
         endDate: today,
@@ -56,8 +68,12 @@ export default async function Reports({
         )
     }
 
+    const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { timeZone: true },
+    })
     const params = await searchParams
-    const defaults = getDefaultDateRange()
+    const defaults = getDefaultDateRange(user?.timeZone ?? null)
     const startDate = firstSearchParam(params.startDate) ?? defaults.startDate
     const endDate = firstSearchParam(params.endDate) ?? defaults.endDate
     const validRange = isValidDate(startDate)

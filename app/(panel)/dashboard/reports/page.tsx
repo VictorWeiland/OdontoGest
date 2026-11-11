@@ -39,10 +39,13 @@ function getDefaultDateRange(timeZone: string | null) {
             .map(({ type, value }) => [type, value])
     )
     const today = `${dateParts.year}-${dateParts.month}-${dateParts.day}`
+    const lastDayOfMonth = new Date(
+        Date.UTC(Number(dateParts.year), Number(dateParts.month), 0)
+    ).toISOString().slice(0, 10)
 
     return {
         startDate: `${today.slice(0, 7)}-01`,
-        endDate: today,
+        endDate: lastDayOfMonth,
     }
 }
 

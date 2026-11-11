@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -7,6 +10,9 @@ interface ReportsDateFilterProps {
 }
 
 export function ReportsDateFilter({ startDate, endDate }: ReportsDateFilterProps) {
+    const [selectedStartDate, setSelectedStartDate] = useState(startDate)
+    const [selectedEndDate, setSelectedEndDate] = useState(endDate)
+
     return (
         <Card>
             <CardContent>
@@ -21,7 +27,8 @@ export function ReportsDateFilter({ startDate, endDate }: ReportsDateFilterProps
                             className="h-9 rounded-md border border-input bg-background px-3 text-sm"
                             type="date"
                             name="startDate"
-                            value={startDate}
+                            value={selectedStartDate}
+                            onChange={(event) => setSelectedStartDate(event.target.value)}
                             required
                         />
                     </label>
@@ -31,7 +38,8 @@ export function ReportsDateFilter({ startDate, endDate }: ReportsDateFilterProps
                             className="h-9 rounded-md border border-input bg-background px-3 text-sm"
                             type="date"
                             name="endDate"
-                            value={endDate}
+                            value={selectedEndDate}
+                            onChange={(event) => setSelectedEndDate(event.target.value)}
                             required
                         />
                     </label>

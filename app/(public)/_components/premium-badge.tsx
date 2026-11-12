@@ -1,9 +1,13 @@
-import { Star } from "lucide-react";
+interface PremiumCardBadgeProps {
+    plan?: "BASIC" | "PROFESSIONAL"
+}
 
-export function PremiumCardBadge(){
-    return(
-        <div className="absolute top-2 right-2 bg-yellow-500 w-10 h-10 z-[2] rounded-full flex items-center justify-center">
-            <Star className="text white"/>
-        </div>
+/** Badge de texto legível para clínicas reais com assinatura ativa. */
+export function PremiumCardBadge({ plan }: PremiumCardBadgeProps) {
+    const label = plan === "PROFESSIONAL" ? "Destaque" : "Parceiro"
+    return (
+        <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-900">
+            {label}
+        </span>
     )
 }

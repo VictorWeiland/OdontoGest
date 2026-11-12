@@ -1,8 +1,7 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import type { Session } from "next-auth";
 import {
   Sheet,
   SheetContent,
@@ -11,102 +10,90 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { Button } from "@/components/ui/button";
-import { LogIn, Menu } from "lucide-react";
-import { useSession } from 'next-auth/react'
-import { handleRegister } from '../_actions/login'
+import { Menu } from "lucide-react";
+import { PortalButton } from "./portal-button";
 
 const navItems = [
-    {href: "#profissionais", label: "Profissionais"},
+    { href: "#como-funciona", label: "Como funciona" },
+    { href: "#recursos", label: "Recursos" },
+    { href: "#clinicas", label: "Clínicas" },
+    { href: "#contato", label: "Contato" },
 ]
 
-interface NavLinksProps {
-    session: Session | null
-    status: "loading" | "authenticated" | "unauthenticated"
-    closeMenu: () => void
-    onLogin: () => Promise<void>
-}
-
-function NavLinks({ session, status, closeMenu, onLogin }: NavLinksProps) {
-    return (
-        <>
-        {navItems.map((item)=>(
-            <Button  
-                onClick={closeMenu}
-                key={item.href}
-                className="bg-transparent hover:bg-transparent text-black shadow-none"
-            >
-                <Link href={item.href} className="text-base">
-                    {item.label}
-                </Link>
-            </Button>
-        ))}
-        {status === 'loading' ? (
-            <></>
-        ) : session ? (
-            <Link 
-                href="/dashboard"
-                className="flex items-center justify-center gap-2 bg-zinc-900 text-white py-1 rounded-md px-4"
-            >
-                Acessar clínica
-            </Link>
-        ):(
-            <Button onClick={onLogin}>
-                <LogIn />
-                Portal da Clínica
-            </Button>
-        )}
-        </>
-    )
-}
+const linkClass =
+    "rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-150 hover:text-emerald-700 focus-visible:outline-2 focus-visible:outline-emerald-600";
 
 export function Header() {
-    const{ data: session, status } = useSession();
     const [isOpen, setIsOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
 
-    async function handleLogin() {
-        await handleRegister("google")
-    }
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 8);
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
 
     return (
-        <header 
-            className="fixed top-0 right-0 left-0 z-999 py-4 px-6 bg-white"
+        <header
+            className={`fixed inset-x-0 top-0 z-50 transition-all duration-200 ${
+                scrolled
+                    ? "bg-white/80 shadow-sm shadow-slate-900/5 backdrop-blur-md"
+                    : "bg-white/60 backdrop-blur-sm"
+            }`}
         >
-            <div className="container mx-auto flex items-center justify-between">
-                <Link 
+            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+                <Link
                     href="/"
-                    className="text-3xl font-bold text-zinc-900"
+                    className="text-2xl font-extrabold tracking-tight text-emerald-950"
+                    aria-label="OdontoGEST - página inicial"
                 >
                     Odonto<span className="text-emerald-500">GEST</span>
                 </Link>
 
-                <nav className="hidden md:flex items-center space-x-04">
-                    <NavLinks session={session} status={status} closeMenu={() => setIsOpen(false)} onLogin={handleLogin} />
+                <nav className="hidden items-center gap-1 md:flex" aria-label="Principal">
+                    {navItems.map((item) => (
+                        <Link key={item.href} href={item.href} className={linkClass}>
+                            {item.label}
+                        </Link>
+                    ))}
+                    <PortalButton className="ml-3" />
                 </nav>
+
                 <Sheet open={isOpen} onOpenChange={setIsOpen}>
                     <SheetTrigger
                         className="md:hidden"
+                        aria-label="Abrir menu"
                         render={
-                            <Button
-                                className="text-black hover:bg-transparent"
-                                variant="ghost"
-                                size="icon"
+                            <button
+                                type="button"
+                                className="inline-flex size-10 items-center justify-center rounded-xl text-emerald-950 transition-colors duration-150 hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-emerald-600"
                             >
-                                <Menu className="w-6 h-6" />
-                            </Button>
+                                <Menu className="size-6" aria-hidden />
+                            </button>
                         }
                     />
-                    <SheetContent side="right" className="z-9999 w-60 sm:w-75">
+                    <SheetContent side="right" className="z-[60] w-72">
                         <SheetHeader className="p-4">
-                            <SheetTitle className="text-lg font-semibold">Menu</SheetTitle>
-                            <SheetDescription>Veja nossos links</SheetDescription>
+                            <SheetTitle className="text-lg font-bold">Menu</SheetTitle>
+                            <SheetDescription>Navegue pelo OdontoGEST</SheetDescription>
                         </SheetHeader>
-                        <nav className="flex flex-col space-y-4 mt-6">
-                            <NavLinks session={session} status={status} closeMenu={() => setIsOpen(false)} onLogin={handleLogin} />
+                        <nav className="flex flex-col gap-1 px-4" aria-label="Mobile">
+                            {navItems.map((item) => (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    onClick={() => setIsOpen(false)}
+                                    className={`${linkClass} text-base`}
+                                >
+                                    {item.label}
+                                </Link>
+                            ))}
+                            <PortalButton className="mt-4" onClick={() => setIsOpen(false)} />
                         </nav>
                     </SheetContent>
                 </Sheet>
-            </div> 
+            </div>
         </header>
     )
 }

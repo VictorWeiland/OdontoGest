@@ -11,5 +11,6 @@ export async function getPermissionUserToReports({ userId }: { userId: string })
         },
     })
 
-    return subscription?.plan === "PROFESSIONAL" && subscription.status === "active"
+    const isSubscribed = subscription?.status === "active" || subscription?.status === "trialing"
+    return subscription?.plan === "PROFESSIONAL" && isSubscribed
 }

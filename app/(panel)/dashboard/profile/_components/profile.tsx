@@ -1,56 +1,55 @@
 "use client"
-import * as React from "react"
-import { ProfileFormData, useProfileForm } from './profile-form'
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card'
-import {
-    Form,
-    FormControl,
-    FormField, FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    SelectGroup
-} from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog'
 
-import { Button } from '@/components/ui/button'
-import { ArrowRight } from 'lucide-react'
-import { cn } from "cn"
+import * as React from "react"
+import { ProfileFormData, useProfileForm } from "./profile-form"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import {
+  Clock,
+  Globe,
+  Building2,
+  Save,
+  Loader2,
+  Phone,
+  MapPin,
+} from "lucide-react"
 import { Prisma } from "@/lib/generated/prisma/client"
 import { updateProfile } from "../_actions/update-profile"
-import {toast} from 'sonner'
-import { formatPhone } from '@/utils/formatPhone'
-import {  signOut, useSession  } from 'next-auth/react'
-import {useRouter} from 'next/navigation'
+import { toast } from "sonner"
+import { formatPhone } from "@/utils/formatPhone"
 import { AvatarProfile } from "./profile-avatar"
+import { Badge } from "@/components/ui/badge"
 
-
-const status = [ //Status da Clnica
-    { label: "ATIVO (clinica aberta) ", value: "active" },
-    { label: "INATIVO (clinica fechada) ", value: "inactive" },
+const statusOptions = [
+  { label: "Aberta (recebendo agendamentos)", value: "active" },
+  { label: "Fechada temporariamente", value: "inactive" },
 ]
 
-const timeZones = Intl.supportedValuesOf("timeZone").filter((zone)=>
+const timeZones = Intl.supportedValuesOf("timeZone").filter(
+  (zone) =>
     zone.startsWith("America/Sao_Paulo") ||
     zone.startsWith("America/Fortaleza") ||
     zone.startsWith("America/Recife") ||
@@ -62,265 +61,410 @@ const timeZones = Intl.supportedValuesOf("timeZone").filter((zone)=>
 )
 
 type UserWithSubscription = Prisma.UserGetPayload<{
-    include:{
-        subscription: true
-    }
+  include: {
+    subscription: true
+  }
 }>
 
-interface ProfileContentProps{
-    user: UserWithSubscription;
+interface ProfileContentProps {
+  user: UserWithSubscription
 }
 
-export function ProfileContent({user}: ProfileContentProps) {
+export function ProfileContent({ user }: ProfileContentProps) {
+  const [selectedHours, setSelectedHours] = React.useState<string[]>(
+    user.times ?? []
+  )
+  const [dialogIsOpen, setDialogIsOpen] = React.useState(false)
+  const [saving, setSaving] = React.useState(false)
 
-    const router = useRouter();
+  const form = useProfileForm({
+    name: user.name,
+    address: user.address,
+    phone: user.phone,
+    status: user.status,
+    timeZone: user.timeZone,
+    times: user.times,
+  })
 
-    const[selectedHours, setSelectedHours] = React.useState<string[]>(user.times ??[])
-    const[dialogIsOpen, setDialogIsOpen] = React.useState(false)
-    const{update} = useSession();
-
-    const alignItemWithTrigger = true
-
-
-    const form = useProfileForm({
-        name: user.name,
-        address: user.address,
-        phone: user.phone,
-        status: user.status,
-        timeZone: user.timeZone,
-        times: user.times
-    });
-
-    function generateTimeSlots() :string[]{
-        const hours: string[] = [];
-        for(let i = 8; i <= 24; i++){
-            for(let j = 0; j<2; j++){
-                const hour = i.toString().padStart(2, "0")
-                const minute = (j * 30).toString().padStart(2, "0")
-                hours.push(`${hour}:${minute}`)
-            }
-        }
-        return hours;
+  function generateTimeSlots(): string[] {
+    const slots: string[] = []
+    for (let i = 8; i <= 22; i++) {
+      for (let j = 0; j < 2; j++) {
+        const hour = i.toString().padStart(2, "0")
+        const minute = (j * 30).toString().padStart(2, "0")
+        slots.push(`${hour}:${minute}`)
+      }
     }
+    return slots
+  }
 
-    const hours = generateTimeSlots();
+  const allAvailableSlots = React.useMemo(() => generateTimeSlots(), [])
 
-    function toggleHour(hour: string){
-        setSelectedHours((prev) => prev.includes(hour) ? prev.filter(h => h !== hour) : [...prev, hour].sort())
-    }
-
-    async function onSubmit(values: ProfileFormData) {
-
-        const response = await updateProfile({
-            name: values.name,
-            address: values.address,
-            status: values.status === 'active' ? true : false,
-            phone: values.phone,
-            timeZone: values.timeZone,
-            times: selectedHours || []
-        })
-        if(response.error){
-            //exiber um alerta
-            toast.error(response.error)
-            return;
-        }
-        //exiber um alerta de sucesso
-        toast.success(response.data)
-
-    }
-
-
-    async function handleLogout() {
-        await signOut();
-        await update();
-        router.replace("/")
-    }
-
-    return (
-        <div className='mx-auto'>
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Meu Perfil</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="flex justify-center">
-                                <AvatarProfile 
-                                    avatarUrl={user.image}
-                                    userId={user.id}/>
-                            </div>
-                            <div className='space-y-4'>
-                                <FormField
-                                    control={form.control}
-                                    name='name'
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className='font-semibold'>Nome Completo</FormLabel>
-                                            <FormControl>
-                                                <Input{...field} placeholder='Digite o nome da clinica...' />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name='address'
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className='font-semibold'>Endereço Completo:</FormLabel>
-                                            <FormControl>
-                                                <Input{...field} placeholder='Digite o endereço da clinica...' />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name='phone'
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className='font-semibold'>Telefone:</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    {...field} 
-                                                    placeholder='(DDD) 99999-9999' 
-                                                    onChange = { (e) => {
-                                                        const formattedValue = formatPhone(e.target.value)
-                                                        field.onChange(formattedValue)
-                                                    }}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name='status'
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className='font-semibold'>
-                                                Status da Clinica:
-                                            </FormLabel>
-                                            <FormControl>
-
-                                                <Select
-                                                    items={status}
-                                                    value={field.value}
-                                                    onValueChange={field.onChange}
-                                                >
-                                                    <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Selecione o status da clinica" />
-                                                    </SelectTrigger>
-                                                    <SelectContent alignItemWithTrigger={alignItemWithTrigger}>
-                                                        <SelectGroup>
-                                                            {status.map((item) => (
-                                                                <SelectItem key={item.value} value={item.value}>
-                                                                    {item.label}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-                                <div className="space-y-2">
-                                    <Label className='font-semibold'>
-                                        Configurar Horário da Clínica
-                                    </Label>
-                                    <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
-                                        <DialogTrigger
-                                            render={
-                                                <Button variant='outline' className='w-full justify-between' />
-                                            }
-                                        >
-                                            Clique aqui para selecionar horários
-                                            <ArrowRight className='w-5 h-5' />
-                                        </DialogTrigger>
-                                        <DialogContent>
-                                            <DialogHeader>
-                                                <DialogTitle>Horários da Clinica</DialogTitle>
-                                                <DialogDescription>Selecione abaixo os horaios de funcionamento da clínica:</DialogDescription>
-                                            </DialogHeader>
-                                            <section className="py-4">
-                                                <p className="text-sm text-muted-foreground mb-2">
-                                                    Clique nos horarios abaixo para marcar ou desmarcar:
-                                                </p>
-                                                <div className="grid grid-cols-5 gap-2">
-                                                    {hours.map((hour)=> (
-                                                        <Button 
-                                                            key={hour} 
-                                                            variant="outline" 
-                                                            className={cn("h-10", selectedHours.includes(hour)&& "border-3 border-emerald-500 text-primary")} onClick={()=> toggleHour(hour)}
-                                                        >
-                                                            {hour}
-                                                        </Button>
-                                                    ))}
-                                                </div>
-                                            </section>
-                                            <Button 
-                                                className="w-full" 
-                                                onClick={() => setDialogIsOpen(false)}
-                                            >
-                                                Salvar Horarios
-                                            </Button>
-                                        </DialogContent>
-                                    </Dialog>
-                                </div>
-                                 <FormField
-                                    control={form.control}
-                                    name='timeZone'
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel className='font-semibold'>
-                                                Selecione o Fuso horário:
-                                            </FormLabel>
-                                            <FormControl>
-
-                                                <Select
-                                                    onValueChange={field.onChange} defaultValue={field.value} 
-                                                >
-                                                    <SelectTrigger className="w-full">
-                                                        <SelectValue placeholder="Selecione o seu Fuso horário" />
-                                                    </SelectTrigger>
-                                                    <SelectContent alignItemWithTrigger={alignItemWithTrigger}>
-                                                    
-                                                            {timeZones.map((zone) => (
-                                                                <SelectItem key={zone} value={zone}>
-                                                                    {zone}
-                                                                </SelectItem>
-                                                            ))}
-                                                        
-                                                    </SelectContent>
-                                                </Select>
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <Button type="submit" className="w-full bg-emerald-500 hover:bg-emerald-400">
-                                    Salvar alterações
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </form>
-
-            </Form>
-
-            <section className="mt-4">
-                <Button
-                    variant="destructive"
-                    onClick={handleLogout}
-                >
-                    Sair da Conta
-                </Button>
-            </section>
-        </div>
+  function toggleHour(hour: string) {
+    setSelectedHours((prev) =>
+      prev.includes(hour)
+        ? prev.filter((h) => h !== hour)
+        : [...prev, hour].sort()
     )
+  }
+
+  function handleSelectAll() {
+    setSelectedHours(allAvailableSlots)
+  }
+
+  function handleClearAll() {
+    setSelectedHours([])
+  }
+
+  async function onSubmit(values: ProfileFormData) {
+    setSaving(true)
+    try {
+      const response = await updateProfile({
+        name: values.name,
+        address: values.address,
+        status: values.status === "active",
+        phone: values.phone,
+        timeZone: values.timeZone,
+        times: selectedHours || [],
+      })
+
+      if (response.error) {
+        toast.error(response.error)
+        return
+      }
+
+      toast.success(response.data || "Perfil salvo com sucesso!")
+    } catch {
+      toast.error("Ocorreu um erro ao atualizar o perfil.")
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="mx-auto max-w-[720px] space-y-6">
+      <div>
+        <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl">
+          Meu Perfil
+        </h2>
+        <p className="text-sm text-slate-500">
+          Gerencie as informações da clínica, horários de funcionamento e fuso horário.
+        </p>
+      </div>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Card 1: Avatar e Dados Principais */}
+          <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
+            <CardHeader className="border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2">
+                <Building2 className="size-5 text-emerald-600" />
+                <CardTitle className="text-lg font-extrabold text-emerald-950">
+                  Dados da Clínica
+                </CardTitle>
+              </div>
+              <CardDescription className="text-xs text-slate-500">
+                Essas informações aparecem para os pacientes na sua página pública de agendamento.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="space-y-6 p-6">
+              <div className="flex justify-center pb-2">
+                <AvatarProfile avatarUrl={user.image} userId={user.id} />
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="sm:col-span-2">
+                      <FormLabel className="text-xs font-semibold text-slate-700">
+                        Nome da clínica ou consultório:
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Ex: Clínica Odontológica Sorriso"
+                          className="rounded-xl border-slate-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-slate-700">
+                        Telefone / WhatsApp:
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Phone className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                          <Input
+                            {...field}
+                            value={field.value || ""}
+                            onChange={(e) =>
+                              field.onChange(formatPhone(e.target.value))
+                            }
+                            placeholder="(11) 99999-9999"
+                            className="rounded-xl border-slate-200 pl-9"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-slate-700">
+                        Status da clínica:
+                      </FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full rounded-xl border-slate-200">
+                            <SelectValue placeholder="Selecione o status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {statusOptions.map((st) => (
+                              <SelectItem key={st.value} value={st.value}>
+                                {st.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem className="sm:col-span-2">
+                      <FormLabel className="text-xs font-semibold text-slate-700">
+                        Endereço completo:
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <MapPin className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                          <Input
+                            {...field}
+                            value={field.value || ""}
+                            placeholder="Ex: Av. Paulista, 1000, Bela Vista - São Paulo, SP"
+                            className="rounded-xl border-slate-200 pl-9"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Card 2: Horário de Funcionamento */}
+          <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
+            <CardHeader className="border-b border-slate-100 pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Clock className="size-5 text-emerald-600" />
+                  <CardTitle className="text-lg font-extrabold text-emerald-950">
+                    Horário de Funcionamento
+                  </CardTitle>
+                </div>
+                <Badge variant={selectedHours.length > 0 ? "success" : "muted"}>
+                  {selectedHours.length} horários ativos
+                </Badge>
+              </div>
+              <CardDescription className="text-xs text-slate-500">
+                Selecione os intervalos de 30 minutos em que sua clínica disponibiliza consultas.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="space-y-4 p-6">
+              {selectedHours.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50/50 p-4 text-center text-xs text-amber-800">
+                  Nenhum horário de atendimento selecionado. Pacientes não conseguirão agendar horários online.
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-1">
+                  {selectedHours.map((hour) => (
+                    <span
+                      key={hour}
+                      className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 font-mono text-xs font-bold text-emerald-800 border border-emerald-200/70"
+                    >
+                      {hour}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDialogIsOpen(true)}
+                className="w-full rounded-xl border-emerald-200 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
+              >
+                Gerenciar horários disponíveis
+              </Button>
+
+              {/* Modal de Seleção de Horários */}
+              <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
+                <DialogContent className="max-w-xl rounded-2xl p-6">
+                  <DialogHeader className="text-left">
+                    <DialogTitle className="text-xl font-extrabold text-emerald-950">
+                      Horários de Atendimento
+                    </DialogTitle>
+                    <DialogDescription className="text-xs text-slate-500">
+                      Clique nos horários para ativar ou desativar os slots da agenda.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="flex items-center justify-between border-y border-slate-100 py-2.5">
+                    <span className="text-xs font-semibold text-slate-600">
+                      {selectedHours.length} horários selecionados
+                    </span>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="xs"
+                        onClick={handleSelectAll}
+                        className="text-xs text-emerald-700 hover:bg-emerald-50"
+                      >
+                        Selecionar todos
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="xs"
+                        onClick={handleClearAll}
+                        className="text-xs text-slate-500 hover:bg-slate-100"
+                      >
+                        Limpar
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-80 overflow-y-auto py-2 pr-1">
+                    {allAvailableSlots.map((hour) => {
+                      const isSelected = selectedHours.includes(hour)
+                      return (
+                        <button
+                          key={hour}
+                          type="button"
+                          onClick={() => toggleHour(hour)}
+                          className={`rounded-xl py-2 font-mono text-xs font-bold transition-all duration-150 ${
+                            isSelected
+                              ? "bg-emerald-500 text-white shadow-2xs shadow-emerald-500/30 scale-102"
+                              : "border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50"
+                          }`}
+                        >
+                          {hour}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  <div className="pt-2">
+                    <Button
+                      type="button"
+                      onClick={() => setDialogIsOpen(false)}
+                      className="w-full rounded-xl bg-emerald-500 font-semibold text-white hover:bg-emerald-600 shadow-xs"
+                    >
+                      Confirmar horários
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </Card>
+
+          {/* Card 3: Fuso Horário */}
+          <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
+            <CardHeader className="border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2">
+                <Globe className="size-5 text-emerald-600" />
+                <CardTitle className="text-lg font-extrabold text-emerald-950">
+                  Fuso Horário
+                </CardTitle>
+              </div>
+              <CardDescription className="text-xs text-slate-500">
+                Garante que os relatórios e agendamentos respeitem o horário local da sua região.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="p-6">
+              <FormField
+                control={form.control}
+                name="timeZone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-semibold text-slate-700">
+                      Região / Fuso Horário:
+                    </FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value || "America/Sao_Paulo"}
+                      >
+                        <SelectTrigger className="w-full rounded-xl border-slate-200">
+                          <SelectValue placeholder="Selecione o seu fuso horário" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {timeZones.map((zone) => (
+                            <SelectItem key={zone} value={zone}>
+                              {zone}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Botão Salvar Fixo / Destacado */}
+          <div className="flex justify-end pt-2">
+            <Button
+              type="submit"
+              disabled={saving}
+              className="gap-2 rounded-xl bg-emerald-500 px-7 py-3 text-sm font-bold text-white hover:bg-emerald-600 shadow-sm shadow-emerald-500/30 transition-all hover:-translate-y-0.5"
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  <span>Salvando...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="size-4" />
+                  <span>Salvar alterações</span>
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  )
 }

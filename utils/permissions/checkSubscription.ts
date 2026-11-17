@@ -18,9 +18,9 @@ export async function checkSubscription(userId: string){
         throw new Error("Usuário não encontrado")
     }
 
-    if(user.subscription && user.subscription.status === "active"){
+    if(user.subscription && (user.subscription.status === "active" || user.subscription.status === "trialing")){
         return{
-            subscriptionStatus: "active",
+            subscriptionStatus: user.subscription.status,
             message: "Assinatura ativa.",
             planId: user.subscription.plan,
         }
@@ -38,8 +38,8 @@ export async function checkSubscription(userId: string){
 
     const daysRemaining = differenceInDays(trialEndDate,new Date())
     return{
-            subscriptionStatus: "TRIAL",
-            message: `Você está no período de teste gratuito! Faltam ${daysRemaining} dias para o termino do período de teste.`,
-            planId: "TRIAL",
-        }
+        subscriptionStatus: "TRIAL",
+        message: `Você está no período de teste gratuito! Faltam ${daysRemaining} dias para o termino do período de teste.`,
+        planId: "TRIAL",
+    }
 }

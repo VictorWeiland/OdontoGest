@@ -20,7 +20,9 @@ function initials(name?: string | null) {
 }
 
 function ClinicCard({ clinic, demo }: { clinic: PublicClinic; demo: boolean }) {
-    const active = clinic.subscription?.status === "active";
+    const active =
+        clinic.subscription?.status === "active" ||
+        clinic.subscription?.status === "trialing";
     const showBadge = !demo && !clinic.isDemo && active;
 
     return (

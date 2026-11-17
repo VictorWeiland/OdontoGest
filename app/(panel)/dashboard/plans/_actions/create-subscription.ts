@@ -4,12 +4,14 @@ import { auth } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { stripe } from '@/utils/stripe'
 import { Plan } from '@/lib/generated/prisma/enums'
+import Stripe from 'stripe'
 
 interface SubscriptionProps {
     type: Plan;
+    billingPeriod?: "monthly" | "yearly";
 }
 
-export async function createSubscription({ type }: SubscriptionProps) {
+export async function createSubscription({ type, billingPeriod = "monthly" }: SubscriptionProps) {
     if (!stripe) {
         return {
             sessionId: "",
@@ -24,9 +26,11 @@ export async function createSubscription({ type }: SubscriptionProps) {
         }
     }
 
+    const isYearly = billingPeriod === "yearly"
     const priceId = type === Plan.BASIC
-        ? process.env.STRIPE_PLAN_BASIC
-        : process.env.STRIPE_PLAN_PROFISSIONAL
+        ? (isYearly ? process.env.STRIPE_PLAN_BASIC_YEARLY || process.env.STRIPE_PLAN_BASIC : process.env.STRIPE_PLAN_BASIC)
+        : (isYearly ? process.env.STRIPE_PLAN_PROFISSIONAL_YEARLY || process.env.STRIPE_PLAN_PROFISSIONAL : process.env.STRIPE_PLAN_PROFISSIONAL)
+
     const successUrlValue = process.env.STRIPE_SUCCESS_URL
     const cancelUrl = process.env.STRIPE_CANCEL_URL
 
@@ -83,7 +87,9 @@ export async function createSubscription({ type }: SubscriptionProps) {
             customerId = stripeCustomer.id
         }
 
-        const stripeCheckoutSession = await stripe.checkout.sessions.create({
+        const trialDays = Number(process.env.NEXT_PUBLIC_TRIAL_DAYS || 0)
+
+        const sessionPayload: Stripe.Checkout.SessionCreateParams = {
             customer: customerId,
             payment_method_types: ["card"],
             billing_address_collection: "required",
@@ -100,7 +106,15 @@ export async function createSubscription({ type }: SubscriptionProps) {
             allow_promotion_codes: true,
             success_url: successUrl.toString(),
             cancel_url: validatedCancelUrl.toString(),
-        })
+        }
+
+        if (trialDays > 0) {
+            sessionPayload.subscription_data = {
+                trial_period_days: trialDays,
+            }
+        }
+
+        const stripeCheckoutSession = await stripe.checkout.sessions.create(sessionPayload)
 
         return {
             sessionId: stripeCheckoutSession.id,

@@ -1,184 +1,335 @@
 "use client"
 
-import { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { useMemo, useState } from "react"
+import { useSearchParams } from "next/navigation"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { format } from "date-fns"
+import { Prisma } from "@/lib/generated/prisma/client"
+import { Button } from "@/components/ui/button"
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle
-} from '@/components/ui/card'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { format } from 'date-fns'
-import { Prisma } from '@/lib/generated/prisma/client'
-import { Button } from '@/components/ui/button'
-import { Eye, X } from 'lucide-react'
-import { cancelAppointment } from '../../_actions/cancel-appointment'
-import { toast } from 'sonner'
-import {
-    Dialog,
-    DialogTrigger
-} from '@/components/ui/dialog'
-import { DialogAppointment } from './dialog-appointments'
-import { ButtonPickerAppointment } from './button-date'
+  Eye,
+  Trash2,
+  MessageCircle,
+  Plus,
+  Clock,
+} from "lucide-react"
+import { cancelAppointment } from "../../_actions/cancel-appointment"
+import { toast } from "sonner"
+import { Dialog } from "@/components/ui/dialog"
+import { DialogAppointment } from "./dialog-appointments"
+import { ButtonPickerAppointment } from "./button-date"
+import { AppointmentsSummary } from "./appointments-summary"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { EmptyState } from "@/components/ui/empty-state"
+import { formatCurrency } from "@/utils/formatCurrency"
+import Link from "next/link"
 
 export type AppointmentWithService = Prisma.AppointmentGetPayload<{
-    include: {
-        service: true
+  include: {
+    service: true
+    user: {
+      select: {
+        name: true
+      }
     }
+  }
 }>
 
 interface AppointmentsListProps {
-    times: string[]
+  times: string[]
+  userId?: string
 }
 
-export function AppointmentsList({ times }: AppointmentsListProps) {
+function getInitials(name?: string | null) {
+  if (!name) return "P"
+  const parts = name.trim().split(" ").filter(Boolean)
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
+  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+}
 
-    const searchParams = useSearchParams();
-    const date = searchParams.get("date")
-    const queryClient = useQueryClient();
-    const [isDialogOpen, setIsDialogOpen] = useState(false)
-    const [detailAppointment, setDetailAppointment] = useState<AppointmentWithService | null>(null)
+function calculateEndTime(startTime: string, durationMinutes: number): string {
+  const [h, m] = startTime.split(":").map(Number)
+  const totalMinutes = h * 60 + m + durationMinutes
+  const endH = Math.floor(totalMinutes / 60) % 24
+  const endM = totalMinutes % 60
+  return `${String(endH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`
+}
 
-    const { data, isLoading, isError, refetch } = useQuery({
-        queryKey: ["get-appointments", date],
-        queryFn: async () => {
-            let activeDate = date;
+export function AppointmentsList({ times, userId }: AppointmentsListProps) {
+  const searchParams = useSearchParams()
+  const dateParam = searchParams.get("date")
+  const queryClient = useQueryClient()
 
-            if (!activeDate) {
-                const today = format(new Date(), "yyyy-MM-dd")
-                activeDate = today;
-            }
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [detailAppointment, setDetailAppointment] =
+    useState<AppointmentWithService | null>(null)
 
-            const response = await fetch(`/api/clinic/appointments?date=${activeDate}`)
+  const activeDate = useMemo(() => {
+    return dateParam || format(new Date(), "yyyy-MM-dd")
+  }, [dateParam])
 
-            if (!response.ok) {
-                throw new Error(`Falha ao carregar agendamentos (${response.status})`)
-            }
-            return await response.json() as AppointmentWithService[]
-        },
-        staleTime: 20000,
-        refetchInterval: 60000,
-    })
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["get-appointments", activeDate],
+    queryFn: async () => {
+      const response = await fetch(
+        `/api/clinic/appointments?date=${activeDate}`
+      )
+      if (!response.ok) {
+        throw new Error(`Falha ao carregar agendamentos (${response.status})`)
+      }
+      return (await response.json()) as AppointmentWithService[]
+    },
+    staleTime: 20000,
+    refetchInterval: 60000,
+  })
 
-    /**
-     * Monta occupantMap slot > appointment
-     * Se um Appoinment começa no time (15:00) e tem requiredSlot 2
-     * occupantMap["15:00", appointment] occupantMap["15:30", appointment]
-     */
-    const occupantMap: Record<string, AppointmentWithService> = {}
+  // Mapeia os slots: início do agendamento e continuações
+  const { startMap, continuationSet } = useMemo(() => {
+    const startMap: Record<
+      string,
+      { appointment: AppointmentWithService; endTime: string }
+    > = {}
+    const continuationSet = new Set<string>()
 
     if (data && data.length > 0) {
-        for (const appointment of data) {
-            //calcular quantos slots necessarios ocupa
-            const requiredSlots = Math.ceil(appointment.service.duration / 30);
+      for (const apt of data) {
+        const requiredSlots = Math.ceil(apt.service.duration / 30)
+        const startIndex = times.indexOf(apt.time)
+        const endTime = calculateEndTime(apt.time, apt.service.duration)
 
-            //descobrir qual é o indice do nosso array de horarios esse agendamento começa
-            const startIndex = times.indexOf(appointment.time)
+        startMap[apt.time] = { appointment: apt, endTime }
 
-            //se encontrou o index
-            if (startIndex !== -1) {
-                for (let i = 0; i < requiredSlots; i++) {
-                    const slotIndex = startIndex + i;
-
-                    if (slotIndex < times.length) {
-                        occupantMap[times[slotIndex]] = appointment
-                    }
-                }
+        if (startIndex !== -1) {
+          for (let i = 1; i < requiredSlots; i++) {
+            const nextSlot = times[startIndex + i]
+            if (nextSlot) {
+              continuationSet.add(nextSlot)
             }
+          }
         }
+      }
     }
 
-    async function handleCancelAppointment(appointmentId: string) {
-        const response = await cancelAppointment({ appointmentId: appointmentId })
+    return { startMap, continuationSet }
+  }, [data, times])
 
-        if (response.error) {
-            toast.error(response.error);
-            return;
-        }
-        queryClient.invalidateQueries({ queryKey: ["get-appointments"] })
-        refetch()
-        toast.success(response.data)
-    }
-
-    return (
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <Card>
-                <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-                    <CardTitle className='text-xl md:text-2xl font-bold'>
-                        Agendamentos
-                    </CardTitle>
-
-                    <ButtonPickerAppointment />
-                </CardHeader>
-
-                <CardContent>
-                    <ScrollArea className="h-[calc(100vh-20rem)] lg:h-[calc(100vh-15rem)] pr-4">
-                        {isLoading ? (
-                            <p>Carregando agenda...</p>
-                        ) : isError ? (
-                            <p role="alert" className="text-sm text-red-600">
-                                Não foi possível carregar os agendamentos. Tente novamente.
-                            </p>
-                        ) : (
-                            times.map((slot) => {
-                                const occupant = occupantMap[slot]
-                                if (occupant) {
-                                    return (
-                                        <div
-                                            key={slot}
-                                            className='flex items-center py-2 border-t last:border-b'
-                                        >
-                                            <div className='w-16 text-sm font-semibold'>{slot}</div>
-                                            <div className='flex-1 text-sm'>
-                                                <div className='flex-1 text-sm text-gray-500'>{occupant.name}</div>
-                                                <div className='text-sm text-gray-500'>
-                                                    {occupant.phone}
-                                                </div>
-                                            </div>
-                                            <div className='ml-auto'>
-                                                <div className='flex'>
-                                                    <DialogTrigger
-                                                        render={
-                                                            <Button
-                                                                variant='ghost'
-                                                                size="icon"
-                                                                onClick={() => setDetailAppointment(occupant)}
-                                                            />
-                                                        }
-                                                    >
-                                                        <Eye className='w-4 h-4' />
-                                                    </DialogTrigger>
-                                                    <Button
-                                                        variant='ghost'
-                                                        size="icon"
-                                                        onClick={() => handleCancelAppointment(occupant.id)}
-                                                    >
-                                                        <X className='w-4 h-4' />
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                                return (
-                                    <div
-                                        key={slot}
-                                        className='flex items-center py-2 border-t last:border-b'
-                                    >
-                                        <div className='w-16 text-sm font-semibold'>{slot}</div>
-                                        <div className='flex-1 text-sm text-gray-500'>Disponivel</div>
-                                    </div>
-                                )
-                            })
-                        )}
-                    </ScrollArea>
-                </CardContent>
-            </Card>
-            <DialogAppointment
-                appointment={detailAppointment}
-            />
-        </Dialog>
+  async function handleCancel(appointmentId: string, patientName: string) {
+    const confirmed = window.confirm(
+      `Deseja realmente cancelar o agendamento de ${patientName}?`
     )
+    if (!confirmed) return
+
+    const response = await cancelAppointment({ appointmentId })
+    if (response.error) {
+      toast.error(response.error)
+      return
+    }
+    toast.success(response.data)
+    queryClient.invalidateQueries({ queryKey: ["get-appointments"] })
+    refetch()
+  }
+
+  return (
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <div className="space-y-4">
+        {/* Resumo de métricas do dia */}
+        <AppointmentsSummary
+          appointments={data || []}
+          selectedDate={activeDate}
+        />
+
+        {/* Card Principal da Agenda */}
+        <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
+          <CardHeader className="flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <CardTitle className="text-xl font-extrabold text-emerald-950 sm:text-2xl">
+                Agenda do Dia
+              </CardTitle>
+              <p className="text-xs text-slate-500">
+                Horários e consultas marcadas para esta data
+              </p>
+            </div>
+
+            <ButtonPickerAppointment />
+          </CardHeader>
+
+          <CardContent className="p-4 sm:p-6">
+            <ScrollArea className="h-[520px] pr-3">
+              {isLoading ? (
+                <div className="space-y-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <Skeleton key={i} className="h-20 w-full rounded-2xl" />
+                  ))}
+                </div>
+              ) : isError ? (
+                <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-6 text-center text-sm text-rose-700">
+                  Não foi possível carregar os agendamentos. Verifique sua conexão e tente novamente.
+                </div>
+              ) : times.length === 0 ? (
+                <EmptyState
+                  icon={Clock}
+                  title="Nenhum horário de atendimento configurado"
+                  description="Defina os horários em que sua clínica atende nas configurações de perfil."
+                  action={
+                    <Link href="/dashboard/profile">
+                      <Button variant="outline" className="rounded-xl">
+                        Configurar horários
+                      </Button>
+                    </Link>
+                  }
+                />
+              ) : (
+                <div className="space-y-2.5">
+                  {times.map((slot) => {
+                    // Se for um slot de continuação de um agendamento mais longo, não renderiza nova linha
+                    if (continuationSet.has(slot)) {
+                      return null
+                    }
+
+                    const match = startMap[slot]
+
+                    if (match) {
+                      const { appointment, endTime } = match
+                      const cleanPhone = appointment.phone.replace(/\D/g, "")
+                      const fullPhone = cleanPhone.startsWith("55")
+                        ? cleanPhone
+                        : `55${cleanPhone}`
+                      const whatsappUrl = `https://wa.me/${fullPhone}?text=${encodeURIComponent(
+                        `Olá, ${appointment.name}! Entramos em contato a respeito da sua consulta marcada para ${appointment.time}.`
+                      )}`
+
+                      return (
+                        <div
+                          key={slot}
+                          className="group relative flex flex-col gap-3 rounded-2xl border border-emerald-200/90 bg-emerald-50/30 p-3.5 transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50/60 hover:shadow-xs sm:flex-row sm:items-center sm:justify-between"
+                        >
+                          {/* Horário início-fim & Badge */}
+                          <div className="flex items-center gap-3">
+                            <div className="flex flex-col items-center justify-center rounded-xl bg-emerald-500 px-3 py-2 text-white shadow-xs shadow-emerald-500/25">
+                              <span className="text-xs font-bold leading-none">
+                                {slot}
+                              </span>
+                              <span className="text-[10px] opacity-80 leading-none mt-0.5">
+                                até {endTime}
+                              </span>
+                            </div>
+
+                            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 font-bold text-xs text-emerald-800">
+                              {getInitials(appointment.name)}
+                            </div>
+
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <h4 className="truncate text-sm font-bold text-emerald-950">
+                                  {appointment.name}
+                                </h4>
+                                <Badge
+                                  variant="success"
+                                  className="hidden sm:inline-flex text-[10px] px-2 py-0"
+                                >
+                                  Confirmado
+                                </Badge>
+                              </div>
+
+                              <div className="flex flex-wrap items-center gap-x-3 text-xs text-slate-500">
+                                <span>{appointment.service.name}</span>
+                                <span>•</span>
+                                <span className="font-semibold text-emerald-700">
+                                  {formatCurrency(
+                                    appointment.service.price / 100
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Ações */}
+                          <div className="flex items-center justify-end gap-1.5 border-t border-emerald-100/60 pt-2 sm:border-0 sm:pt-0">
+                            <a
+                              href={whatsappUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex size-9 items-center justify-center rounded-xl border border-emerald-200 bg-white text-emerald-600 transition-colors hover:bg-emerald-50 hover:text-emerald-700"
+                              title="Conversar no WhatsApp"
+                              aria-label={`Conversar com ${appointment.name} no WhatsApp`}
+                            >
+                              <MessageCircle className="size-4" />
+                            </a>
+
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="size-9 rounded-xl border-slate-200 text-slate-600 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
+                              onClick={() => {
+                                setDetailAppointment(appointment)
+                                setIsDialogOpen(true)
+                              }}
+                              title="Ver detalhes"
+                              aria-label={`Ver detalhes do agendamento de ${appointment.name}`}
+                            >
+                              <Eye className="size-4" />
+                            </Button>
+
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="size-9 rounded-xl text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+                              onClick={() =>
+                                handleCancel(appointment.id, appointment.name)
+                              }
+                              title="Cancelar agendamento"
+                              aria-label={`Cancelar agendamento de ${appointment.name}`}
+                            >
+                              <Trash2 className="size-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    // Slot Livre e discreto
+                    return (
+                      <div
+                        key={slot}
+                        className="flex items-center justify-between rounded-xl border border-dashed border-slate-200/90 bg-white px-3.5 py-2.5 transition-colors hover:border-emerald-300 hover:bg-emerald-50/20"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="w-14 font-mono text-xs font-semibold text-slate-400">
+                            {slot}
+                          </span>
+                          <span className="text-xs text-slate-400">
+                            Horário livre
+                          </span>
+                        </div>
+
+                        {userId && (
+                          <Link
+                            href={`/clinica/${userId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-50 transition-colors"
+                          >
+                            <Plus className="size-3" />
+                            <span>Agendar</span>
+                          </Link>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      </div>
+
+      <DialogAppointment
+        appointment={detailAppointment}
+        onClose={() => setIsDialogOpen(false)}
+      />
+    </Dialog>
+  )
 }

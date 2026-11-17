@@ -12,12 +12,18 @@ export function FinalCta() {
                     <div aria-hidden className="pointer-events-none absolute -top-20 -right-20 size-72 rounded-full bg-emerald-500/50" />
                     <div aria-hidden className="pointer-events-none absolute -bottom-24 -left-16 size-64 rounded-full bg-emerald-700/40" />
                     <div className="relative">
-                        <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Leve sua clínica para o digital</h2>
-                        <p className="mx-auto mt-4 max-w-[60ch] text-lg leading-relaxed text-emerald-50">
-                            Receba agendamentos online e organize a rotina da sua clínica em um só lugar.
+                        <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                            Leve seu consultório para o digital
+                        </h2>
+                        <p className="mx-auto mt-4 max-w-[60ch] text-base leading-relaxed text-emerald-50 sm:text-lg">
+                            Receba agendamentos online 24h, confirme horários no WhatsApp com 1 clique e simplifique a rotina da sua clínica.
                         </p>
                         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                            <PortalButton variant="light" className="px-6! py-3.5! text-base!" />
+                            <PortalButton
+                                variant="light"
+                                className="px-6! py-3.5! text-base!"
+                                label="Acessar Portal da Clínica"
+                            />
                             {wa && (
                                 <a
                                     href={wa}

@@ -1,12 +1,10 @@
 "use server"
 
 import { Plan } from "@/lib/generated/prisma/client"
-import { PLANS } from "@/utils/plans"
+import { PLANS, PlansDetailsProps } from "@/utils/plans"
 
-export interface PlanDetailInfo{
-    maxServices: number;
-}
+export type PlanDetailInfo = PlansDetailsProps
 
-export async function getPlan(planId: Plan) {
-    return PLANS[planId]
+export async function getPlan(planId: Plan): Promise<PlanDetailInfo> {
+    return PLANS[planId] || { maxServices: 15, maxProfessionals: 1 }
 }

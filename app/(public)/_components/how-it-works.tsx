@@ -1,10 +1,22 @@
-import { Search, CalendarClock, MailCheck } from "lucide-react";
+import { Search, CalendarClock, CheckCircle } from "lucide-react";
 import { Reveal } from "./reveal";
 
 const steps = [
-    { icon: Search, title: "Escolha a clínica", text: "Veja as clínicas disponíveis e escolha a que fica melhor para você." },
-    { icon: CalendarClock, title: "Selecione o horário", text: "Escolha o serviço, o dia e um horário livre direto na agenda online." },
-    { icon: MailCheck, title: "Receba a confirmação", text: "Pronto: seu agendamento fica registrado e a clínica é avisada na hora." },
+    {
+        icon: Search,
+        title: "Escolha a clínica",
+        text: "Veja as clínicas disponíveis e escolha a mais conveniente para o seu atendimento."
+    },
+    {
+        icon: CalendarClock,
+        title: "Selecione o horário",
+        text: "Escolha o procedimento odontológico, o dia e o horário livre na agenda em tempo real."
+    },
+    {
+        icon: CheckCircle,
+        title: "Receba a confirmação",
+        text: "Pronto! O agendamento fica registrado e disponível no painel de consultas da clínica."
+    },
 ];
 
 export function HowItWorks() {

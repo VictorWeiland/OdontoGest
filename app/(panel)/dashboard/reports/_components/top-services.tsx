@@ -1,59 +1,105 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import type { ReportsData } from "../_data-access/get-reports-data"
-
-const currencyFormatter = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-})
+import { formatCurrency } from "@/utils/formatCurrency"
+import { EmptyState } from "@/components/ui/empty-state"
+import { Stethoscope, Trophy } from "lucide-react"
 
 interface TopServicesProps {
-    services: ReportsData["services"]
+  services: ReportsData["services"]
 }
 
 export function TopServices({ services }: TopServicesProps) {
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Serviços mais agendados</CardTitle>
-                <CardDescription>Ordenados pela quantidade de agendamentos no período.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                {services.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
-                        Nenhum serviço agendado neste período.
-                    </p>
-                ) : (
-                    <ol className="divide-y">
-                        {services.map((service, index) => (
-                            <li
-                                key={service.id}
-                                className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
-                            >
-                                <div className="flex items-start gap-3">
-                                    <span
-                                        className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold"
-                                        aria-label={`Posição ${index + 1}`}
-                                    >
-                                        {index + 1}
-                                    </span>
-                                    <div>
-                                        <p className="font-medium">{service.name}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {service.appointmentCount}{" "}
-                                            {service.appointmentCount === 1 ? "agendamento" : "agendamentos"}
-                                            {" · "}
-                                            {service.durationMinutes} min no total
-                                        </p>
-                                    </div>
-                                </div>
-                                <p className="font-medium sm:text-right">
-                                    {currencyFormatter.format(service.estimatedRevenueCents / 100)}
-                                </p>
-                            </li>
-                        ))}
-                    </ol>
-                )}
-            </CardContent>
-        </Card>
-    )
+  const maxCount = Math.max(...services.map((s) => s.appointmentCount), 1)
+
+  return (
+    <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs xl:col-span-2">
+      <CardHeader className="border-b border-slate-100 pb-4">
+        <div className="flex items-center gap-2">
+          <Trophy className="size-5 text-amber-500" />
+          <CardTitle className="text-lg font-extrabold text-emerald-950 sm:text-xl">
+            Serviços Mais Agendados
+          </CardTitle>
+        </div>
+        <CardDescription className="text-xs text-slate-500">
+          Ranking dos procedimentos com maior procura e receita estimada no período.
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent className="p-4 sm:p-6">
+        {services.length === 0 ? (
+          <EmptyState
+            icon={Stethoscope}
+            title="Nenhum serviço agendado"
+            description="Não houve agendamentos registrados no período selecionado."
+          />
+        ) : (
+          <div className="space-y-4">
+            {services.map((service, index) => {
+              const percentage = Math.round((service.appointmentCount / maxCount) * 100)
+
+              return (
+                <div
+                  key={service.id}
+                  className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 transition-all duration-150 hover:border-emerald-200 hover:bg-emerald-50/20"
+                >
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`flex size-8 shrink-0 items-center justify-center rounded-xl font-bold text-xs ${
+                          index === 0
+                            ? "bg-amber-100 text-amber-900"
+                            : index === 1
+                            ? "bg-slate-200 text-slate-700"
+                            : index === 2
+                            ? "bg-amber-50 text-amber-800"
+                            : "bg-slate-100 text-slate-500"
+                        }`}
+                      >
+                        #{index + 1}
+                      </span>
+                      <div>
+                        <h4 className="text-sm font-bold text-emerald-950">
+                          {service.name}
+                        </h4>
+                        <p className="text-xs text-slate-500">
+                          {service.appointmentCount}{" "}
+                          {service.appointmentCount === 1
+                            ? "agendamento"
+                            : "agendamentos"}{" "}
+                          • {service.durationMinutes} min de atendimento
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="sm:text-right">
+                      <span className="text-[10px] text-slate-400 block leading-none">
+                        Receita estimada
+                      </span>
+                      <span className="text-base font-extrabold text-emerald-600">
+                        {formatCurrency(service.estimatedRevenueCents / 100)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Barra proporcional */}
+                  <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200/80">
+                    <div
+                      className="h-full rounded-full bg-emerald-500 transition-all duration-300"
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
 }

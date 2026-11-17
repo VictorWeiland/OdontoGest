@@ -18,12 +18,18 @@ export async function canCreateService(subscription: Subscription | null, sessio
             }
         })
 
-        if (subscription && subscription.status === "active") {
+        const isSubscribed = Boolean(
+            subscription && (subscription.status === "active" || subscription.status === "trialing")
+        )
+
+        if (subscription && isSubscribed) {
             const plan = subscription.plan;
             const planLimits = await getPlan(plan);
+            const isUnlimited = planLimits.maxServices === null || planLimits.maxServices === undefined;
+            const hasPermission = isUnlimited || serviceCount < (planLimits.maxServices ?? 0);
 
             return {
-                hasPermission: serviceCount < planLimits.maxServices,
+                hasPermission,
                 planId: subscription.plan,
                 expired: false,
                 plan: PLANS[subscription.plan],

@@ -1,64 +1,122 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+"use client"
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import type { ReportsData } from "../_data-access/get-reports-data"
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts"
+import { formatCurrency } from "@/utils/formatCurrency"
+import { EmptyState } from "@/components/ui/empty-state"
+import { CalendarDays } from "lucide-react"
 
-const currencyFormatter = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-})
-
-function formatDay(date: string) {
-    return new Intl.DateTimeFormat("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
-        timeZone: "UTC",
-    }).format(new Date(`${date}T00:00:00.000Z`))
+function formatDayLabel(dateStr: string) {
+  const [year, month, day] = dateStr.split("-").map(Number)
+  const d = new Date(Date.UTC(year, month - 1, day))
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "UTC",
+  }).format(d)
 }
 
 interface AppointmentsByDayProps {
-    days: ReportsData["appointmentsByDay"]
+  days: ReportsData["appointmentsByDay"]
 }
 
 export function AppointmentsByDay({ days }: AppointmentsByDayProps) {
-    const maxCount = Math.max(...days.map((day) => day.count), 1)
+  const chartData = days.map((day) => ({
+    date: day.date,
+    formattedDate: formatDayLabel(day.date),
+    count: day.count,
+    revenue: day.estimatedRevenueCents / 100,
+  }))
 
-    return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Agendamentos por dia</CardTitle>
-                <CardDescription>Volume diário e valor estimado dos serviços agendados.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                {days.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
-                        Nenhum agendamento encontrado neste período.
-                    </p>
-                ) : (
-                    <ul className="space-y-4">
-                        {days.map((day) => (
-                            <li key={day.date} className="space-y-1">
-                                <div className="flex justify-between gap-4 text-sm">
-                                    <span className="font-medium">{formatDay(day.date)}</span>
-                                    <span>
-                                        {day.count} {day.count === 1 ? "agendamento" : "agendamentos"}
-                                        {" · "}
-                                        {currencyFormatter.format(day.estimatedRevenueCents / 100)}
-                                    </span>
-                                </div>
-                                <div
-                                    className="h-2 overflow-hidden rounded-full bg-muted"
-                                    role="img"
-                                    aria-label={`${day.count} agendamentos em ${formatDay(day.date)}`}
-                                >
-                                    <div
-                                        className="h-full rounded-full bg-emerald-500"
-                                        style={{ width: `${(day.count / maxCount) * 100}%` }}
-                                    />
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </CardContent>
-        </Card>
-    )
+  return (
+    <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
+      <CardHeader className="border-b border-slate-100 pb-4">
+        <CardTitle className="text-lg font-extrabold text-emerald-950 sm:text-xl">
+          Agendamentos por Dia
+        </CardTitle>
+        <CardDescription className="text-xs text-slate-500">
+          Volume diário de consultas agendadas pela plataforma.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-4 sm:p-6">
+        {days.length === 0 ? (
+          <EmptyState
+            icon={CalendarDays}
+            title="Nenhum agendamento no período"
+            description="Não encontramos consultas marcadas para os dias selecionados."
+          />
+        ) : (
+          <div className="h-72 w-full pt-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData}
+                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="#f1f5f9"
+                />
+                <XAxis
+                  dataKey="formattedDate"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#64748b", fontSize: 11 }}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#64748b", fontSize: 11 }}
+                />
+                <Tooltip
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const item = payload[0].payload
+                      return (
+                        <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
+                          <p className="text-xs font-bold text-emerald-950">
+                            {item.formattedDate}
+                          </p>
+                          <p className="mt-1 text-xs text-emerald-700 font-semibold">
+                            {item.count}{" "}
+                            {item.count === 1 ? "agendamento" : "agendamentos"}
+                          </p>
+                          <p className="text-[11px] text-slate-500">
+                            Faturamento est.: {formatCurrency(item.revenue)}
+                          </p>
+                        </div>
+                      )
+                    }
+                    return null
+                  }}
+                />
+                <Bar
+                  dataKey="count"
+                  fill="#10b981"
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={40}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  )
 }

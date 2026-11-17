@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarCheck, BellRing, ShieldCheck, ArrowRight } from "lucide-react";
+import { CalendarCheck, MessageCircle, ShieldCheck, ArrowRight } from "lucide-react";
 import dentistImg from "../../../public/dentist-hero.jpg";
 import { PortalButton } from "./portal-button";
 
 const trustBadges = [
     { icon: CalendarCheck, label: "Agendamento online 24h" },
-    { icon: BellRing, label: "Lembretes automáticos" },
+    { icon: MessageCircle, label: "Confirmação WhatsApp com 1 clique" },
     { icon: ShieldCheck, label: "Seguro e em conformidade com a LGPD" },
 ];
 
@@ -27,7 +27,7 @@ export function Hero() {
                     </h1>
                     <p className="max-w-[60ch] text-lg leading-relaxed text-slate-600">
                         Pacientes escolhem a clínica, o dia e o horário em minutos. Clínicas
-                        organizam agenda, pacientes e lembretes em um só lugar.
+                        organizam agenda online, serviços e horários de atendimento em um só lugar.
                     </p>
 
                     <div className="flex flex-col gap-3 sm:flex-row">

@@ -68,7 +68,7 @@ export default async function Reports({
   const session = await getSession()
 
   if (!session?.user?.id) {
-    redirect("/")
+    redirect("/login")
   }
 
   const hasPermission = await getPermissionUserToReports({

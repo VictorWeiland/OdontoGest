@@ -12,7 +12,7 @@ export default async function Dashboard() {
   const session = await getSession()
 
   if (!session?.user?.id) {
-    redirect("/")
+    redirect("/login")
   }
 
   const subscription = await checkSubscription(session.user.id)

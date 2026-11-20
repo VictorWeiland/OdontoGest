@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
+import { computeBlockedSlots, parseUtcDateRange } from '@/lib/schedule-utils'
 
 export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl
@@ -17,11 +18,16 @@ export async function GET(request: NextRequest) {
         })
     }
 
-    try {
-        const [year, month, day] = dateParam.split('-').map(Number)
-        const startDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0))
-        const endDate = new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999))
+    const range = parseUtcDateRange(dateParam)
+    if (!range) {
+        return NextResponse.json({
+            error: "Nenhum agendamento encontrado"
+        }, {
+            status: 400
+        })
+    }
 
+    try {
         const user = await prisma.user.findFirst({
             where: {
                 id: userId
@@ -39,8 +45,8 @@ export async function GET(request: NextRequest) {
             where: {
                 userId: userId,
                 appointmentDate: {
-                    gte: startDate,
-                    lte: endDate
+                    gte: range.startDate,
+                    lte: range.endDate
                 }
             },
             include: {
@@ -48,25 +54,7 @@ export async function GET(request: NextRequest) {
             }
         })
 
-        //MONTAR COMTODOS OS SLOTS OCUPADOS
-
-        const blockedSlots = new Set<string>()
-
-        for (const apt of appointments) {
-            const requiredSlots = Math.ceil(apt.service.duration / 30)
-            const startIndex = user.times.indexOf(apt.time)
-
-            if (startIndex !== -1) {
-                for (let i = 0; i < requiredSlots; i++) {
-                    const blockedSlot = user.times[startIndex + i]
-                    if (blockedSlot) {
-                        blockedSlots.add(blockedSlot)
-                    }
-                }
-            }
-        }
-
-        const blockedTimes = Array.from(blockedSlots);
+        const blockedTimes = computeBlockedSlots(appointments, user.times)
 
         return NextResponse.json(blockedTimes)
 

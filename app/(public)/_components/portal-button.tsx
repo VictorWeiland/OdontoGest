@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { LogIn, LayoutDashboard } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { handleRegister } from "../_actions/login";
 
 interface PortalButtonProps {
     variant?: "primary" | "light"
@@ -18,7 +17,7 @@ const styles = {
     light: "bg-white text-emerald-800 hover:bg-emerald-50 shadow-sm",
 };
 
-/** Botão "Portal da Clínica": login (Google) ou acesso ao painel se já logado. */
+/** Botão "Portal da Clínica": leva ao login (/login) ou ao painel (/dashboard) se já logado. */
 export function PortalButton({ variant = "primary", className = "", onClick, label = "Portal da Clínica" }: PortalButtonProps) {
     const { data: session, status } = useSession();
     const base = `inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 ${styles[variant]} ${className}`;
@@ -37,16 +36,9 @@ export function PortalButton({ variant = "primary", className = "", onClick, lab
     }
 
     return (
-        <button
-            type="button"
-            className={base}
-            onClick={async () => {
-                onClick?.();
-                await handleRegister("google");
-            }}
-        >
+        <Link href="/login" onClick={onClick} className={base}>
             <LogIn className="size-4" aria-hidden />
             {label}
-        </button>
+        </Link>
     );
 }

@@ -8,7 +8,7 @@ export default async function Services() {
   const session = await getSession()
 
   if (!session?.user?.id) {
-    redirect("/")
+    redirect("/login")
   }
 
   return (

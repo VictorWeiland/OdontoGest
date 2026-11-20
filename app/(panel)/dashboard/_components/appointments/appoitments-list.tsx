@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { format } from "date-fns"
+import { formatToSaoPauloIso, getSaoPauloToday } from "@/lib/schedule-utils"
 import { Prisma } from "@/lib/generated/prisma/client"
 import { Button } from "@/components/ui/button"
 import {
@@ -26,6 +26,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { EmptyState } from "@/components/ui/empty-state"
 import { formatCurrency } from "@/utils/formatCurrency"
 import Link from "next/link"
+import { useQuickAppointment } from "../quick-appointment/quick-appointment-modal"
 
 export type AppointmentWithService = Prisma.AppointmentGetPayload<{
   include: {
@@ -62,13 +63,14 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
   const searchParams = useSearchParams()
   const dateParam = searchParams.get("date")
   const queryClient = useQueryClient()
+  const { openQuickAppointment } = useQuickAppointment()
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [detailAppointment, setDetailAppointment] =
     useState<AppointmentWithService | null>(null)
 
   const activeDate = useMemo(() => {
-    return dateParam || format(new Date(), "yyyy-MM-dd")
+    return dateParam || formatToSaoPauloIso(getSaoPauloToday())
   }, [dateParam])
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -306,15 +308,20 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
                         </div>
 
                         {userId && (
-                          <Link
-                            href={`/clinica/${userId}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium text-emerald-600 hover:bg-emerald-50 transition-colors"
+                          <button
+                            type="button"
+                            onClick={() =>
+                              openQuickAppointment({
+                                date: activeDate,
+                                time: slot,
+                              })
+                            }
+                            aria-label={`Agendar horário das ${slot}`}
+                            className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-emerald-600"
                           >
-                            <Plus className="size-3" />
+                            <Plus className="size-3" aria-hidden />
                             <span>Agendar</span>
-                          </Link>
+                          </button>
                         )}
                       </div>
                     )

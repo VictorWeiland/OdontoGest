@@ -50,7 +50,7 @@ export function ServiceList({ services, permission }: ServiceListProps) {
   const [deleting, setDeleting] = useState(false)
 
   const rawMax = permission.plan?.maxServices
-  const isUnlimited = rawMax === null || rawMax === undefined
+  const isUnlimited = Boolean(permission.plan && rawMax === null)
   const maxServices = isUnlimited ? Infinity : (rawMax ?? TRIAL_MAX_SERVICES)
   const serviceCount = services.length
   const limitReached = !isUnlimited && serviceCount >= maxServices
@@ -132,7 +132,9 @@ export function ServiceList({ services, permission }: ServiceListProps) {
               </Badge>
             </div>
             <p className="text-xs text-slate-500">
-              {isUnlimited
+              {permission.expired
+                ? "Seu período de teste gratuito expirou. Escolha um plano para continuar cadastrando serviços."
+                : isUnlimited
                 ? "Seu plano permite cadastrar procedimentos sem limite."
                 : limitReached
                 ? "Você atingiu o limite de serviços do seu plano atual."

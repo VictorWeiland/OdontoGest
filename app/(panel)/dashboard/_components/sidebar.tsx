@@ -16,6 +16,7 @@ import {
   LogOut,
   Lock,
   ExternalLink,
+  Plus,
 } from "lucide-react"
 import {
   Sheet,
@@ -27,6 +28,26 @@ import {
 import { Button } from "@/components/ui/button"
 import { Topbar } from "./topbar"
 import { cn } from "@/lib/utils"
+import {
+  QuickAppointmentProvider,
+  useQuickAppointment,
+} from "./quick-appointment/quick-appointment-modal"
+
+function MobileQuickAppointmentFab() {
+  const { openQuickAppointment } = useQuickAppointment()
+
+  return (
+    <button
+      type="button"
+      onClick={() => openQuickAppointment()}
+      aria-label="Agendamento rápido"
+      title="Agendamento rápido"
+      className="fixed right-4 bottom-5 z-40 inline-flex size-14 items-center justify-center rounded-2xl bg-emerald-500 text-white shadow-lg shadow-emerald-500/35 transition-transform duration-150 hover:bg-emerald-600 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 md:hidden"
+    >
+      <Plus className="size-6" aria-hidden />
+    </button>
+  )
+}
 
 interface UserSessionInfo {
   id?: string
@@ -154,7 +175,8 @@ export default function SidebarDashboard({
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-slate-50/60 text-slate-800">
+    <QuickAppointmentProvider>
+      <div className="flex min-h-screen w-full bg-slate-50/60 text-slate-800">
       {/* Sidebar Desktop Fixa */}
       <aside
         className={cn(
@@ -363,10 +385,13 @@ export default function SidebarDashboard({
           onOpenMobileMenu={() => setIsMobileOpen(true)}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 p-4 pb-24 sm:p-6 sm:pb-24 md:pb-8 lg:p-8">
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>
+
+      <MobileQuickAppointmentFab />
     </div>
+    </QuickAppointmentProvider>
   )
 }

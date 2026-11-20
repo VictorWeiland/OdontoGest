@@ -8,13 +8,13 @@ export default async function Profile(){
 
   
   if(!session){
-    redirect("/")
+    redirect("/login")
   }
 
   const user = await getUserData({ userId: session.user?.id })
 
    if(!user){
-    redirect("/")
+    redirect("/login")
   }
 
     return(

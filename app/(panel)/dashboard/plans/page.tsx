@@ -9,7 +9,7 @@ export default async function Plans() {
   const session = await getSession()
 
   if (!session) {
-    redirect("/")
+    redirect("/login")
   }
 
   const subscription = await getSubscription({ userId: session.user.id })

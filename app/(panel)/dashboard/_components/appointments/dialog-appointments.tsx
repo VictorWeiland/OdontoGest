@@ -8,6 +8,10 @@ import {
 } from "@/components/ui/dialog"
 import { AppointmentWithService } from "./appoitments-list"
 import { formatCurrency } from "@/utils/formatCurrency"
+import {
+  buildConfirmationWhatsAppUrl,
+  formatAppointmentFullDate,
+} from "@/utils/whatsapp"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -47,23 +51,19 @@ export function DialogAppointment({
   if (!appointment) return null
 
   // Data em minúsculas: ex.: "sexta-feira, 13 de novembro de 2026"
-  const appointmentDateFormatted = new Intl.DateTimeFormat("pt-BR", {
-    timeZone: "UTC",
-    dateStyle: "full",
-  })
-    .format(new Date(appointment.appointmentDate))
-    .toLowerCase()
-
-  // Limpa caracteres do telefone para WhatsApp com DDI 55
-  const cleanPhone = appointment.phone.replace(/\D/g, "")
-  const fullPhone = cleanPhone.startsWith("55") ? cleanPhone : `55${cleanPhone}`
-  const clinicName = appointment.user?.name || "OdontoGEST"
-
-  // Mensagem pronta de confirmação em 1 clique
-  const whatsappMessage = encodeURIComponent(
-    `Olá, ${appointment.name}! Confirmando sua consulta de ${appointment.service.name} em ${appointmentDateFormatted} às ${appointment.time} na ${clinicName}. Pode confirmar?`
+  const appointmentDateFormatted = formatAppointmentFullDate(
+    appointment.appointmentDate
   )
-  const whatsappUrl = `https://wa.me/${fullPhone}?text=${whatsappMessage}`
+
+  const clinicName = appointment.user?.name || "OdontoGEST"
+  const whatsappUrl = buildConfirmationWhatsAppUrl({
+    patientName: appointment.name,
+    patientPhone: appointment.phone,
+    serviceName: appointment.service.name,
+    date: appointment.appointmentDate,
+    time: appointment.time,
+    clinicName,
+  })
 
   async function handleCancel() {
     if (!appointment) return
@@ -131,10 +131,12 @@ export function DialogAppointment({
                 <Phone className="size-3.5 shrink-0 text-slate-400" />
                 <span className="truncate">{appointment.phone}</span>
               </span>
-              <span className="inline-flex items-center gap-1 truncate">
-                <Mail className="size-3.5 shrink-0 text-slate-400" />
-                <span className="truncate">{appointment.email}</span>
-              </span>
+              {appointment.email && (
+                <span className="inline-flex items-center gap-1 truncate">
+                  <Mail className="size-3.5 shrink-0 text-slate-400" />
+                  <span className="truncate">{appointment.email}</span>
+                </span>
+              )}
             </div>
           </div>
         </div>

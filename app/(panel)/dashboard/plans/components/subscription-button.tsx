@@ -40,7 +40,7 @@ export function SubscriptionButton({
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-emerald-600 bg-white px-4 py-3 text-sm font-bold text-emerald-800 shadow-2xs transition-all duration-150 hover:bg-emerald-50 hover:text-emerald-900 focus-visible:outline-2 focus-visible:outline-emerald-600"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-emerald-600 bg-white px-4 py-3 text-sm font-bold text-emerald-800 shadow-2xs transition-all duration-150 hover:bg-emerald-50 hover:text-emerald-900 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:border-emerald-500/60 dark:bg-slate-900 dark:text-emerald-300 dark:hover:bg-emerald-500/15"
         >
           <MessageCircle className="size-4 text-emerald-600" />
           <span>{actionLabel || "Falar com a equipe"}</span>
@@ -57,7 +57,7 @@ export function SubscriptionButton({
       return (
         <a
           href={mailtoUrl}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-emerald-600 bg-white px-4 py-3 text-sm font-bold text-emerald-800 shadow-2xs transition-all duration-150 hover:bg-emerald-50 hover:text-emerald-900 focus-visible:outline-2 focus-visible:outline-emerald-600"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-emerald-600 bg-white px-4 py-3 text-sm font-bold text-emerald-800 shadow-2xs transition-all duration-150 hover:bg-emerald-50 hover:text-emerald-900 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:border-emerald-500/60 dark:bg-slate-900 dark:text-emerald-300 dark:hover:bg-emerald-500/15"
         >
           <Mail className="size-4 text-emerald-600" />
           <span>{actionLabel || "Falar com a equipe"}</span>
@@ -108,7 +108,7 @@ export function SubscriptionButton({
       className={`w-full rounded-xl py-3 text-sm font-bold shadow-xs transition-all duration-150 ${
         isPro
           ? "bg-emerald-500 text-white hover:bg-emerald-600 shadow-emerald-500/20"
-          : "border border-slate-200 bg-slate-900 text-white hover:bg-slate-800"
+          : "border border-slate-200 bg-slate-900 text-white hover:bg-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
       }`}
     >
       {isLoading ? (

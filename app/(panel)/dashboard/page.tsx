@@ -22,10 +22,10 @@ export default async function Dashboard() {
       {/* Barra de Ações Rápidas */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl">
+          <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl dark:text-emerald-50">
             Visão Geral
           </h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Acompanhe suas consultas de hoje e anotações rápidas.
           </p>
         </div>
@@ -41,7 +41,7 @@ export default async function Dashboard() {
       )}
 
       {subscription.subscriptionStatus === "TRIAL" && (
-        <div className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 text-emerald-900 shadow-2xs">
+        <div className="flex items-center justify-between gap-3 rounded-2xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 text-emerald-900 shadow-2xs dark:border-emerald-500/30 dark:bg-emerald-950/50 dark:text-emerald-100">
           <div className="flex items-center gap-2.5">
             <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-emerald-500 text-white shadow-2xs">
               <Sparkles className="size-4" />
@@ -52,7 +52,7 @@ export default async function Dashboard() {
           </div>
           <Link
             href="/dashboard/plans"
-            className="shrink-0 text-xs font-bold text-emerald-700 hover:text-emerald-800 underline underline-offset-2"
+            className="shrink-0 text-xs font-bold text-emerald-700 hover:text-emerald-800 underline underline-offset-2 dark:text-emerald-400 dark:hover:text-emerald-300"
           >
             Ver planos
           </Link>

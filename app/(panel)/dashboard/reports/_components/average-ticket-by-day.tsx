@@ -44,12 +44,12 @@ export function AverageTicketByDay({ days }: AverageTicketByDayProps) {
   }))
 
   return (
-    <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
-      <CardHeader className="border-b border-slate-100 pb-4">
-        <CardTitle className="text-lg font-extrabold text-emerald-950 sm:text-xl">
+    <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <CardHeader className="border-b border-slate-100 pb-4 dark:border-slate-800">
+        <CardTitle className="text-lg font-extrabold text-emerald-950 sm:text-xl dark:text-emerald-50">
           Ticket Médio por Dia
         </CardTitle>
-        <CardDescription className="text-xs text-slate-500">
+        <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
           Evolução do valor médio estimado por agendamento ao longo do tempo.
         </CardDescription>
       </CardHeader>
@@ -76,18 +76,19 @@ export function AverageTicketByDay({ days }: AverageTicketByDayProps) {
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="#f1f5f9"
+                  stroke="currentColor"
+                  className="text-slate-100 dark:text-slate-800"
                 />
                 <XAxis
                   dataKey="formattedDate"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#64748b", fontSize: 11 }}
+                  tick={{ fill: "#94a3b8", fontSize: 11 }}
                 />
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#64748b", fontSize: 11 }}
+                  tick={{ fill: "#94a3b8", fontSize: 11 }}
                   tickFormatter={(val) => `R$${val}`}
                 />
                 <Tooltip
@@ -95,14 +96,14 @@ export function AverageTicketByDay({ days }: AverageTicketByDayProps) {
                     if (active && payload && payload.length) {
                       const item = payload[0].payload
                       return (
-                        <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
-                          <p className="text-xs font-bold text-emerald-950">
+                        <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+                          <p className="text-xs font-bold text-emerald-950 dark:text-emerald-50">
                             {item.formattedDate}
                           </p>
-                          <p className="mt-1 text-sm font-extrabold text-emerald-600">
+                          <p className="mt-1 text-sm font-extrabold text-emerald-600 dark:text-emerald-400">
                             {formatCurrency(item.averageTicket)}
                           </p>
-                          <p className="text-[11px] text-slate-500">
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400">
                             Base: {item.count}{" "}
                             {item.count === 1 ? "agendamento" : "agendamentos"}
                           </p>

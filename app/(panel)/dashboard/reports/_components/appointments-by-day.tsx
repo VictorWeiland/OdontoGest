@@ -44,12 +44,12 @@ export function AppointmentsByDay({ days }: AppointmentsByDayProps) {
   }))
 
   return (
-    <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
-      <CardHeader className="border-b border-slate-100 pb-4">
-        <CardTitle className="text-lg font-extrabold text-emerald-950 sm:text-xl">
+    <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <CardHeader className="border-b border-slate-100 pb-4 dark:border-slate-800">
+        <CardTitle className="text-lg font-extrabold text-emerald-950 sm:text-xl dark:text-emerald-50">
           Agendamentos por Dia
         </CardTitle>
-        <CardDescription className="text-xs text-slate-500">
+        <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
           Volume diário de consultas agendadas pela plataforma.
         </CardDescription>
       </CardHeader>
@@ -70,34 +70,36 @@ export function AppointmentsByDay({ days }: AppointmentsByDayProps) {
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="#f1f5f9"
+                  stroke="currentColor"
+                  className="text-slate-100 dark:text-slate-800"
                 />
                 <XAxis
                   dataKey="formattedDate"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#64748b", fontSize: 11 }}
+                  tick={{ fill: "#94a3b8", fontSize: 11 }}
                 />
                 <YAxis
                   allowDecimals={false}
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#64748b", fontSize: 11 }}
+                  tick={{ fill: "#94a3b8", fontSize: 11 }}
                 />
                 <Tooltip
+                  cursor={{ fill: "rgba(16, 185, 129, 0.08)" }}
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       const item = payload[0].payload
                       return (
-                        <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-lg">
-                          <p className="text-xs font-bold text-emerald-950">
+                        <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-700 dark:bg-slate-900">
+                          <p className="text-xs font-bold text-emerald-950 dark:text-emerald-50">
                             {item.formattedDate}
                           </p>
-                          <p className="mt-1 text-xs text-emerald-700 font-semibold">
+                          <p className="mt-1 text-xs text-emerald-700 font-semibold dark:text-emerald-400">
                             {item.count}{" "}
                             {item.count === 1 ? "agendamento" : "agendamentos"}
                           </p>
-                          <p className="text-[11px] text-slate-500">
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400">
                             Faturamento est.: {formatCurrency(item.revenue)}
                           </p>
                         </div>

@@ -33,56 +33,56 @@ export function QuickAppointmentSuccess({
 
   return (
     <div className="space-y-5 py-2 text-center">
-      <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600">
+      <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
         <CheckCircle2 className="size-8" aria-hidden />
       </div>
 
       <div>
-        <h3 className="text-xl font-extrabold text-emerald-950">
+        <h3 className="text-xl font-extrabold text-emerald-950 dark:text-emerald-50">
           Agendamento confirmado!
         </h3>
-        <p className="mt-1 text-xs text-slate-600">
+        <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
           O horário já foi adicionado à agenda da clínica.
         </p>
       </div>
 
-      <div className="space-y-3 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 text-left text-xs">
-        <div className="flex items-center gap-2 border-b border-emerald-100 pb-2.5">
-          <User className="size-4 shrink-0 text-emerald-600" aria-hidden />
+      <div className="space-y-3 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 text-left text-xs dark:border-emerald-500/25 dark:bg-emerald-950/30">
+        <div className="flex items-center gap-2 border-b border-emerald-100 pb-2.5 dark:border-emerald-500/20">
+          <User className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />
           <div className="min-w-0">
-            <p className="truncate font-bold text-emerald-950 text-sm">
+            <p className="truncate font-bold text-emerald-950 text-sm dark:text-emerald-50">
               {appointment.patientName}
             </p>
-            <p className="truncate text-slate-600">{appointment.patientPhone}</p>
+            <p className="truncate text-slate-600 dark:text-slate-300">{appointment.patientPhone}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           <div>
-            <span className="flex items-center gap-1 text-slate-500">
-              <Calendar className="size-3.5 text-emerald-600" aria-hidden />
+            <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+              <Calendar className="size-3.5 text-emerald-600 dark:text-emerald-400" aria-hidden />
               Data
             </span>
-            <p className="mt-0.5 font-semibold text-emerald-950">
+            <p className="mt-0.5 font-semibold text-emerald-950 dark:text-emerald-50">
               {formattedDate}
             </p>
           </div>
           <div>
-            <span className="flex items-center gap-1 text-slate-500">
-              <Clock className="size-3.5 text-emerald-600" aria-hidden />
+            <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+              <Clock className="size-3.5 text-emerald-600 dark:text-emerald-400" aria-hidden />
               Horário e duração
             </span>
-            <p className="mt-0.5 font-semibold text-emerald-950">
+            <p className="mt-0.5 font-semibold text-emerald-950 dark:text-emerald-50">
               {appointment.time} ({formatDurationLabel(appointment.serviceDuration)})
             </p>
           </div>
         </div>
 
-        <div className="flex items-baseline justify-between gap-2 border-t border-emerald-100 pt-2.5">
-          <span className="truncate font-bold text-emerald-950 text-sm">
+        <div className="flex items-baseline justify-between gap-2 border-t border-emerald-100 pt-2.5 dark:border-emerald-500/20">
+          <span className="truncate font-bold text-emerald-950 text-sm dark:text-emerald-50">
             {appointment.serviceName}
           </span>
-          <span className="shrink-0 font-extrabold text-emerald-700 text-sm">
+          <span className="shrink-0 font-extrabold text-emerald-700 text-sm dark:text-emerald-400">
             {formatCurrency(appointment.servicePrice / 100)}
           </span>
         </div>
@@ -104,7 +104,7 @@ export function QuickAppointmentSuccess({
             type="button"
             variant="outline"
             onClick={onNewAppointment}
-            className="h-10 flex-1 gap-1.5 rounded-xl border-slate-200 text-xs font-semibold text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-800"
+            className="h-10 flex-1 gap-1.5 rounded-xl border-slate-200 text-xs font-semibold text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-800 dark:border-slate-700 dark:text-slate-200 dark:hover:border-emerald-500/40 dark:hover:bg-slate-800 dark:hover:text-emerald-300"
           >
             <Plus className="size-4" aria-hidden />
             Novo agendamento
@@ -113,7 +113,7 @@ export function QuickAppointmentSuccess({
             type="button"
             variant="ghost"
             onClick={onClose}
-            className="h-10 flex-1 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+            className="h-10 flex-1 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
           >
             Fechar
           </Button>

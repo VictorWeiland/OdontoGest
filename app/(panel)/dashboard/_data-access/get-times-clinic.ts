@@ -6,7 +6,8 @@ export async function getTimesClinic({ userId }: { userId: string }) {
     if(!userId){
         return{
             times:[],
-            userId: ""
+            userId: "",
+            status: false,
         }
     }
 
@@ -17,24 +18,28 @@ export async function getTimesClinic({ userId }: { userId: string }) {
             },
             select:{
                 id: true,
-                times: true
+                times: true,
+                status: true,
             }
         })
         if(!user){
             return{
                 times: [],
                 userId: "",
+                status: false,
             }
         }
         return{
             times: user.times,
-            userId: user.id
+            userId: user.id,
+            status: user.status,
         }
     } catch (err) {
         console.error(err);
         return{
             times:[],
-            userId: ""
+            userId: "",
+            status: false,
         }
     }
 }

@@ -6,6 +6,7 @@ import getSession from "@/lib/getSession"
 import { sanitizeCallbackUrl } from "@/lib/auth-schemas"
 import { AuthBrandPanel } from "../_components/auth-brand-panel"
 import { LoginForm } from "./_components/login-form"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export const metadata: Metadata = {
   title: "Entrar - OdontoGEST",
@@ -26,17 +27,21 @@ export default async function LoginPage({
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-white">
+    <div className="flex min-h-screen w-full bg-white dark:bg-slate-950">
       <AuthBrandPanel />
 
       {/* Coluna Direita: Formulário de Login */}
-      <div className="flex flex-1 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16">
+      <div className="relative flex flex-1 flex-col justify-center px-6 py-12 sm:px-12 lg:px-16">
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+          <ThemeToggle />
+        </div>
+
         <div className="mx-auto w-full max-w-md">
           {/* Logo compacto no mobile */}
           <div className="mb-8 lg:hidden">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 rounded-xl text-2xl font-black tracking-tight text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+              className="inline-flex items-center gap-2 rounded-xl text-2xl font-black tracking-tight text-emerald-950 dark:text-emerald-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
             >
               <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-500 text-lg font-black text-white shadow-xs shadow-emerald-500/30">
                 O
@@ -50,9 +55,9 @@ export default async function LoginPage({
           <Suspense
             fallback={
               <div className="space-y-4">
-                <div className="h-8 w-48 animate-pulse rounded-xl bg-slate-100" />
-                <div className="h-11 w-full animate-pulse rounded-xl bg-slate-100" />
-                <div className="h-11 w-full animate-pulse rounded-xl bg-slate-100" />
+                <div className="h-8 w-48 animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" />
+                <div className="h-11 w-full animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" />
+                <div className="h-11 w-full animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" />
               </div>
             }
           >

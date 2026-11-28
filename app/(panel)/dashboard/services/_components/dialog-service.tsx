@@ -134,13 +134,13 @@ export function DialogService({
   return (
     <div className="space-y-4">
       <DialogHeader className="text-left">
-        <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+        <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
           <Stethoscope className="size-5" />
         </div>
-        <DialogTitle className="mt-2 text-xl font-extrabold text-emerald-950">
+        <DialogTitle className="mt-2 text-xl font-extrabold text-emerald-950 dark:text-emerald-50">
           {serviceId ? "Editar Serviço" : "Novo Serviço"}
         </DialogTitle>
-        <DialogDescription className="text-xs text-slate-500">
+        <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
           {serviceId
             ? "Atualize o nome, valor ou duração deste procedimento."
             : "Cadastre um novo procedimento odontológico oferecido na clínica."}
@@ -154,14 +154,14 @@ export function DialogService({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-semibold text-slate-700">
+                <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Nome do procedimento:
                 </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     placeholder="Ex: Limpeza e Profilaxia, Clareamento Dental"
-                    className="rounded-xl border-slate-200"
+                    className="rounded-xl border-slate-200 dark:border-slate-700"
                   />
                 </FormControl>
                 <FormMessage />
@@ -174,7 +174,7 @@ export function DialogService({
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-xs font-semibold text-slate-700">
+                <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Preço do serviço (R$):
                 </FormLabel>
                 <FormControl>
@@ -185,7 +185,7 @@ export function DialogService({
                     <Input
                       {...field}
                       placeholder="150,00"
-                      className="rounded-xl border-slate-200 pl-9"
+                      className="rounded-xl border-slate-200 pl-9 dark:border-slate-700"
                       onChange={changeCurrency}
                     />
                   </div>
@@ -196,7 +196,7 @@ export function DialogService({
           />
 
           <div className="space-y-2">
-            <Label className="text-xs font-semibold text-slate-700">
+            <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
               Tempo de duração estimado:
             </Label>
             <div className="grid grid-cols-2 gap-3">
@@ -213,7 +213,7 @@ export function DialogService({
                           min="0"
                           type="number"
                           aria-label="Horas de duração"
-                          className="rounded-xl border-slate-200 pr-12"
+                          className="rounded-xl border-slate-200 pr-12 dark:border-slate-700"
                         />
                         <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
                           horas
@@ -239,7 +239,7 @@ export function DialogService({
                           step="15"
                           type="number"
                           aria-label="Minutos de duração"
-                          className="rounded-xl border-slate-200 pr-12"
+                          className="rounded-xl border-slate-200 pr-12 dark:border-slate-700"
                         />
                         <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400">
                           minutos
@@ -251,7 +251,7 @@ export function DialogService({
                 )}
               />
             </div>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500">
               A agenda é dividida em blocos de 30 minutos.
             </p>
           </div>
@@ -261,7 +261,7 @@ export function DialogService({
               type="button"
               variant="outline"
               onClick={handleCloseModal}
-              className="flex-1 rounded-xl border-slate-200"
+              className="flex-1 rounded-xl border-slate-200 dark:border-slate-700"
             >
               Cancelar
             </Button>

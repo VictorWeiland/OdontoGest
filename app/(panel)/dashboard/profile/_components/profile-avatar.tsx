@@ -74,7 +74,7 @@ export function AvatarProfile({ avatarUrl, userId }: AvatarProfileProps) {
 
   return (
     <div className="relative group flex flex-col items-center">
-      <div className="relative size-32 sm:size-36 overflow-hidden rounded-full border-4 border-white ring-4 ring-emerald-500/20 shadow-md">
+      <div className="relative size-32 sm:size-36 overflow-hidden rounded-full border-4 border-white ring-4 ring-emerald-500/20 shadow-md dark:border-slate-800">
         <Image
           src={previewImage || semFoto}
           alt="Foto de perfil da clínica"
@@ -104,7 +104,7 @@ export function AvatarProfile({ avatarUrl, userId }: AvatarProfileProps) {
         </label>
       </div>
 
-      <p className="mt-2 text-xs text-slate-500">
+      <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
         Clique na foto para alterar o logo da clínica
       </p>
     </div>

@@ -65,12 +65,12 @@ export function ReportsDateFilter({
   }
 
   return (
-    <Card className="rounded-2xl border border-slate-200/80 bg-white p-2 shadow-xs">
+    <Card className="rounded-2xl border border-slate-200/80 bg-white p-2 shadow-xs dark:border-slate-800 dark:bg-slate-900">
       <CardContent className="p-3 sm:p-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           {/* Filtros Rápidos em 1 clique */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide mr-1 hidden sm:inline">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide mr-1 hidden sm:inline dark:text-slate-400">
               Período:
             </span>
             <Button
@@ -78,7 +78,7 @@ export function ReportsDateFilter({
               variant="outline"
               size="sm"
               onClick={() => handleQuickFilter(7)}
-              className="rounded-xl text-xs font-medium border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+              className="rounded-xl text-xs font-medium border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 dark:border-slate-700 dark:hover:border-emerald-500/50 dark:hover:bg-emerald-500/15 dark:hover:text-emerald-300"
             >
               Últimos 7 dias
             </Button>
@@ -87,7 +87,7 @@ export function ReportsDateFilter({
               variant="outline"
               size="sm"
               onClick={() => handleQuickFilter(30)}
-              className="rounded-xl text-xs font-medium border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+              className="rounded-xl text-xs font-medium border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 dark:border-slate-700 dark:hover:border-emerald-500/50 dark:hover:bg-emerald-500/15 dark:hover:text-emerald-300"
             >
               Últimos 30 dias
             </Button>
@@ -96,7 +96,7 @@ export function ReportsDateFilter({
               variant="outline"
               size="sm"
               onClick={handleCurrentMonth}
-              className="rounded-xl text-xs font-medium border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800"
+              className="rounded-xl text-xs font-medium border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-800 dark:border-slate-700 dark:hover:border-emerald-500/50 dark:hover:bg-emerald-500/15 dark:hover:text-emerald-300"
             >
               Este mês
             </Button>
@@ -108,26 +108,26 @@ export function ReportsDateFilter({
             className="flex flex-wrap items-center gap-2.5 sm:gap-3"
           >
             <div className="flex items-center gap-2">
-              <label className="text-xs text-slate-500 font-medium">De:</label>
+              <label className="text-xs text-slate-500 font-medium dark:text-slate-400">De:</label>
               <div className="relative">
                 <input
                   type="date"
                   value={selectedStartDate}
                   onChange={(e) => setSelectedStartDate(e.target.value)}
-                  className="h-9 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="h-9 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:focus:bg-slate-800"
                   required
                 />
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <label className="text-xs text-slate-500 font-medium">Até:</label>
+              <label className="text-xs text-slate-500 font-medium dark:text-slate-400">Até:</label>
               <div className="relative">
                 <input
                   type="date"
                   value={selectedEndDate}
                   onChange={(e) => setSelectedEndDate(e.target.value)}
-                  className="h-9 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  className="h-9 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:focus:bg-slate-800"
                   required
                 />
               </div>

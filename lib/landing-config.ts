@@ -9,6 +9,9 @@ export const SHOW_DEMO_CLINICS = process.env.NEXT_PUBLIC_SHOW_DEMO_CLINICS !== "
 /** Métricas e depoimentos. Só ligue com dados verdadeiros. */
 export const SHOW_SOCIAL_PROOF = process.env.NEXT_PUBLIC_SHOW_SOCIAL_PROOF === "true";
 
+/** Triagem de urgência na página pública da clínica (em standby por padrão). */
+export const SHOW_PRIORITY_TRIAGE = process.env.NEXT_PUBLIC_SHOW_PRIORITY_TRIAGE === "true";
+
 export const SITE_URL = process.env.NEXT_PUBLIC_URL ?? "http://localhost:3000";
 
 export const CONTACT = {

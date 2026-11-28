@@ -144,14 +144,14 @@ export default function SidebarDashboard({
             "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
             isActive
               ? "bg-emerald-500 text-white shadow-xs font-semibold"
-              : "text-slate-600 hover:bg-emerald-50/70 hover:text-emerald-800",
+              : "text-slate-600 hover:bg-emerald-50/70 hover:text-emerald-800 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-emerald-300",
             isCollapsed && "justify-center px-2"
           )}
         >
           <Icon
             className={cn(
               "size-5 shrink-0 transition-colors",
-              isActive ? "text-white" : "text-slate-500 group-hover:text-emerald-700"
+              isActive ? "text-white" : "text-slate-500 group-hover:text-emerald-700 dark:text-slate-400 dark:group-hover:text-emerald-300"
             )}
           />
 
@@ -160,7 +160,7 @@ export default function SidebarDashboard({
           )}
 
           {!isCollapsed && item.locked && (
-            <span className="inline-flex items-center gap-1 rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-900">
+            <span className="inline-flex items-center gap-1 rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-900 dark:bg-amber-500/20 dark:text-amber-200">
               <Lock className="size-3" />
               {item.badge}
             </span>
@@ -176,20 +176,20 @@ export default function SidebarDashboard({
 
   return (
     <QuickAppointmentProvider>
-      <div className="flex min-h-screen w-full bg-slate-50/60 text-slate-800">
+      <div className="flex min-h-screen w-full bg-slate-50/60 text-slate-800 dark:bg-slate-950 dark:text-slate-200">
       {/* Sidebar Desktop Fixa */}
       <aside
         className={cn(
-          "hidden md:fixed md:inset-y-0 md:left-0 md:z-40 md:flex md:flex-col md:border-r md:border-slate-200/80 md:bg-white md:transition-all md:duration-200",
+          "hidden md:fixed md:inset-y-0 md:left-0 md:z-40 md:flex md:flex-col md:border-r md:border-slate-200/80 md:bg-white md:transition-all md:duration-200 dark:md:border-slate-800 dark:md:bg-slate-900",
           isCollapsed ? "md:w-20" : "md:w-64"
         )}
       >
         {/* Header da Sidebar com Logo */}
-        <div className="flex h-16 items-center justify-between border-b border-slate-100 px-4">
+        <div className="flex h-16 items-center justify-between border-b border-slate-100 px-4 dark:border-slate-800">
           <Link
             href="/dashboard"
             className={cn(
-              "flex items-center gap-2 font-extrabold tracking-tight text-emerald-950 transition-opacity",
+              "flex items-center gap-2 font-extrabold tracking-tight text-emerald-950 transition-opacity dark:text-emerald-50",
               isCollapsed && "mx-auto"
             )}
           >
@@ -209,7 +209,7 @@ export default function SidebarDashboard({
           <button
             type="button"
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="inline-flex size-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 hover:bg-emerald-50 hover:text-emerald-700 transition-colors"
+            className="inline-flex size-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 hover:bg-emerald-50 hover:text-emerald-700 transition-colors dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-emerald-300"
             aria-label={isCollapsed ? "Expandir menu lateral" : "Recolher menu lateral"}
           >
             {isCollapsed ? (
@@ -225,7 +225,7 @@ export default function SidebarDashboard({
           {/* Grupo PAINEL */}
           <div>
             {!isCollapsed && (
-              <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 Painel
               </p>
             )}
@@ -237,7 +237,7 @@ export default function SidebarDashboard({
           {/* Grupo CONFIGURAÇÕES */}
           <div>
             {!isCollapsed && (
-              <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 Configurações
               </p>
             )}
@@ -248,15 +248,15 @@ export default function SidebarDashboard({
         </div>
 
         {/* Rodapé da Sidebar - Usuário & Sair */}
-        <div className="border-t border-slate-100 p-3">
+        <div className="border-t border-slate-100 p-3 dark:border-slate-800">
           <div
             className={cn(
-              "flex items-center gap-3 rounded-2xl bg-slate-50 p-2.5 transition-colors",
+              "flex items-center gap-3 rounded-2xl bg-slate-50 p-2.5 transition-colors dark:bg-slate-800/80",
               isCollapsed && "justify-center p-2"
             )}
           >
             {user?.image ? (
-              <div className="relative size-9 shrink-0 overflow-hidden rounded-xl border border-slate-200">
+              <div className="relative size-9 shrink-0 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
                 <Image
                   src={user.image}
                   alt={user.name || "Foto de perfil"}
@@ -265,17 +265,17 @@ export default function SidebarDashboard({
                 />
               </div>
             ) : (
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-xs font-bold text-emerald-800">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-xs font-bold text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300">
                 {getInitials(user?.name)}
               </div>
             )}
 
             {!isCollapsed && (
               <div className="flex-1 min-w-0">
-                <p className="truncate text-xs font-bold text-emerald-950">
+                <p className="truncate text-xs font-bold text-emerald-950 dark:text-emerald-50">
                   {user?.name || "Clínica"}
                 </p>
-                <p className="truncate text-[11px] text-slate-500">
+                <p className="truncate text-[11px] text-slate-500 dark:text-slate-400">
                   {user?.email || "Minha conta"}
                 </p>
               </div>
@@ -286,7 +286,7 @@ export default function SidebarDashboard({
                 type="button"
                 onClick={handleLogout}
                 title="Sair da conta"
-                className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600 focus-visible:outline-2 focus-visible:outline-rose-600"
+                className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600 focus-visible:outline-2 focus-visible:outline-rose-600 dark:hover:bg-rose-500/15 dark:hover:text-rose-400"
                 aria-label="Sair da conta"
               >
                 <LogOut className="size-4" />
@@ -299,11 +299,11 @@ export default function SidebarDashboard({
       {/* Drawer Mobile (Sheet) */}
       <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
         <SheetContent side="left" className="z-50 w-72 p-0">
-          <SheetHeader className="border-b border-slate-100 p-5 text-left">
-            <SheetTitle className="text-xl font-extrabold text-emerald-950">
+          <SheetHeader className="border-b border-slate-100 p-5 text-left dark:border-slate-800">
+            <SheetTitle className="text-xl font-extrabold text-emerald-950 dark:text-emerald-50">
               Odonto<span className="text-emerald-500">GEST</span>
             </SheetTitle>
-            <SheetDescription className="text-xs text-slate-500">
+            <SheetDescription className="text-xs text-slate-500 dark:text-slate-400">
               Menu de navegação da clínica
             </SheetDescription>
           </SheetHeader>
@@ -311,7 +311,7 @@ export default function SidebarDashboard({
           <div className="flex h-[calc(100%-80px)] flex-col justify-between p-4">
             <div className="space-y-6 overflow-y-auto">
               <div>
-                <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                   Painel
                 </p>
                 <nav className="space-y-1">
@@ -320,7 +320,7 @@ export default function SidebarDashboard({
               </div>
 
               <div>
-                <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                   Configurações
                 </p>
                 <nav className="space-y-1">
@@ -335,25 +335,25 @@ export default function SidebarDashboard({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setIsMobileOpen(false)}
-                    className="flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50/60 px-3.5 py-2.5 text-xs font-semibold text-emerald-800"
+                    className="flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50/60 px-3.5 py-2.5 text-xs font-semibold text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300"
                   >
                     <span>Página pública de agendamento</span>
-                    <ExternalLink className="size-4 text-emerald-600" />
+                    <ExternalLink className="size-4 text-emerald-600 dark:text-emerald-400" />
                   </Link>
                 </div>
               )}
             </div>
 
-            <div className="border-t border-slate-100 pt-4">
+            <div className="border-t border-slate-100 pt-4 dark:border-slate-800">
               <div className="mb-3 flex items-center gap-3">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-xs font-bold text-emerald-800">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-xs font-bold text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300">
                   {getInitials(user?.name)}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-bold text-emerald-950">
+                  <p className="truncate text-xs font-bold text-emerald-950 dark:text-emerald-50">
                     {user?.name || "Clínica"}
                   </p>
-                  <p className="truncate text-[11px] text-slate-500">
+                  <p className="truncate text-[11px] text-slate-500 dark:text-slate-400">
                     {user?.email || "Minha conta"}
                   </p>
                 </div>

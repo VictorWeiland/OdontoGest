@@ -42,6 +42,7 @@ export type AppointmentWithService = Prisma.AppointmentGetPayload<{
 interface AppointmentsListProps {
   times: string[]
   userId?: string
+  clinicStatus?: boolean
 }
 
 function getInitials(name?: string | null) {
@@ -59,7 +60,7 @@ function calculateEndTime(startTime: string, durationMinutes: number): string {
   return `${String(endH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`
 }
 
-export function AppointmentsList({ times, userId }: AppointmentsListProps) {
+export function AppointmentsList({ times, userId, clinicStatus = true }: AppointmentsListProps) {
   const searchParams = useSearchParams()
   const dateParam = searchParams.get("date")
   const queryClient = useQueryClient()
@@ -144,13 +145,13 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
         />
 
         {/* Card Principal da Agenda */}
-        <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
-          <CardHeader className="flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <CardHeader className="flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
             <div>
-              <CardTitle className="text-xl font-extrabold text-emerald-950 sm:text-2xl">
+              <CardTitle className="text-xl font-extrabold text-emerald-950 sm:text-2xl dark:text-emerald-50">
                 Agenda do Dia
               </CardTitle>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Horários e consultas marcadas para esta data
               </p>
             </div>
@@ -159,6 +160,19 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
           </CardHeader>
 
           <CardContent className="p-4 sm:p-6">
+            {!clinicStatus && (
+              <div className="mb-4 flex flex-col gap-2 rounded-2xl border border-rose-200 bg-rose-50/70 px-4 py-3 text-xs text-rose-800 sm:flex-row sm:items-center sm:justify-between dark:border-rose-500/30 dark:bg-rose-950/30 dark:text-rose-200">
+                <span>
+                  <strong>Clínica fechada temporariamente:</strong> novos agendamentos online e rápidos estão bloqueados.
+                </span>
+                <Link
+                  href="/dashboard/profile"
+                  className="shrink-0 font-bold text-rose-900 underline underline-offset-2 hover:text-rose-700 dark:text-rose-300 dark:hover:text-rose-100"
+                >
+                  Ativar em Meu Perfil
+                </Link>
+              </div>
+            )}
             <ScrollArea className="h-[520px] pr-3">
               {isLoading ? (
                 <div className="space-y-3">
@@ -167,7 +181,7 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
                   ))}
                 </div>
               ) : isError ? (
-                <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-6 text-center text-sm text-rose-700">
+                <div className="rounded-2xl border border-rose-200 bg-rose-50/50 p-6 text-center text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-950/40 dark:text-rose-200">
                   Não foi possível carregar os agendamentos. Verifique sua conexão e tente novamente.
                 </div>
               ) : times.length === 0 ? (
@@ -206,7 +220,7 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
                       return (
                         <div
                           key={slot}
-                          className="group relative flex flex-col gap-3 rounded-2xl border border-emerald-200/90 bg-emerald-50/30 p-3.5 transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50/60 hover:shadow-xs sm:flex-row sm:items-center sm:justify-between"
+                          className="group relative flex flex-col gap-3 rounded-2xl border border-emerald-200/90 bg-emerald-50/30 p-3.5 transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50/60 hover:shadow-xs sm:flex-row sm:items-center sm:justify-between dark:border-emerald-500/30 dark:bg-emerald-950/30 dark:hover:border-emerald-500/50 dark:hover:bg-emerald-950/50"
                         >
                           {/* Horário início-fim & Badge */}
                           <div className="flex items-center gap-3">
@@ -219,13 +233,13 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
                               </span>
                             </div>
 
-                            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 font-bold text-xs text-emerald-800">
+                            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 font-bold text-xs text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300">
                               {getInitials(appointment.name)}
                             </div>
 
                             <div className="min-w-0">
                               <div className="flex items-center gap-2">
-                                <h4 className="truncate text-sm font-bold text-emerald-950">
+                                <h4 className="truncate text-sm font-bold text-emerald-950 dark:text-emerald-50">
                                   {appointment.name}
                                 </h4>
                                 <Badge
@@ -236,10 +250,10 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
                                 </Badge>
                               </div>
 
-                              <div className="flex flex-wrap items-center gap-x-3 text-xs text-slate-500">
+                              <div className="flex flex-wrap items-center gap-x-3 text-xs text-slate-500 dark:text-slate-400">
                                 <span>{appointment.service.name}</span>
                                 <span>•</span>
-                                <span className="font-semibold text-emerald-700">
+                                <span className="font-semibold text-emerald-700 dark:text-emerald-400">
                                   {formatCurrency(
                                     appointment.service.price / 100
                                   )}
@@ -249,12 +263,12 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
                           </div>
 
                           {/* Ações */}
-                          <div className="flex items-center justify-end gap-1.5 border-t border-emerald-100/60 pt-2 sm:border-0 sm:pt-0">
+                          <div className="flex items-center justify-end gap-1.5 border-t border-emerald-100/60 pt-2 sm:border-0 sm:pt-0 dark:border-emerald-500/20">
                             <a
                               href={whatsappUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex size-9 items-center justify-center rounded-xl border border-emerald-200 bg-white text-emerald-600 transition-colors hover:bg-emerald-50 hover:text-emerald-700"
+                              className="inline-flex size-9 items-center justify-center rounded-xl border border-emerald-200 bg-white text-emerald-600 transition-colors hover:bg-emerald-50 hover:text-emerald-700 dark:border-emerald-500/30 dark:bg-slate-900 dark:text-emerald-400 dark:hover:bg-emerald-500/15"
                               title="Conversar no WhatsApp"
                               aria-label={`Conversar com ${appointment.name} no WhatsApp`}
                             >
@@ -264,7 +278,7 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
                             <Button
                               variant="outline"
                               size="icon"
-                              className="size-9 rounded-xl border-slate-200 text-slate-600 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
+                              className="size-9 rounded-xl border-slate-200 text-slate-600 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700 dark:border-slate-700 dark:text-slate-300 dark:hover:border-emerald-500/40 dark:hover:bg-slate-800 dark:hover:text-emerald-300"
                               onClick={() => {
                                 setDetailAppointment(appointment)
                                 setIsDialogOpen(true)
@@ -278,7 +292,7 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="size-9 rounded-xl text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+                              className="size-9 rounded-xl text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-500/15 dark:hover:text-rose-400"
                               onClick={() =>
                                 handleCancel(appointment.id, appointment.name)
                               }
@@ -296,18 +310,18 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
                     return (
                       <div
                         key={slot}
-                        className="flex items-center justify-between rounded-xl border border-dashed border-slate-200/90 bg-white px-3.5 py-2.5 transition-colors hover:border-emerald-300 hover:bg-emerald-50/20"
+                        className="flex items-center justify-between rounded-xl border border-dashed border-slate-200/90 bg-white px-3.5 py-2.5 transition-colors hover:border-emerald-300 hover:bg-emerald-50/20 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-emerald-500/40 dark:hover:bg-emerald-950/25"
                       >
                         <div className="flex items-center gap-3">
-                          <span className="w-14 font-mono text-xs font-semibold text-slate-400">
+                          <span className="w-14 font-mono text-xs font-semibold text-slate-400 dark:text-slate-500">
                             {slot}
                           </span>
-                          <span className="text-xs text-slate-400">
+                          <span className="text-xs text-slate-400 dark:text-slate-500">
                             Horário livre
                           </span>
                         </div>
 
-                        {userId && (
+                        {userId && clinicStatus && (
                           <button
                             type="button"
                             onClick={() =>
@@ -317,7 +331,7 @@ export function AppointmentsList({ times, userId }: AppointmentsListProps) {
                               })
                             }
                             aria-label={`Agendar horário das ${slot}`}
-                            className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-emerald-600"
+                            className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-50 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:text-emerald-400 dark:hover:bg-emerald-500/15"
                           >
                             <Plus className="size-3" aria-hidden />
                             <span>Agendar</span>

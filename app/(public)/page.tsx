@@ -16,7 +16,7 @@ export default async function Home() {
   const { clinics, demoOnly } = await getProfessionals();
 
   return (
-    <div className="flex min-h-screen flex-col bg-white text-slate-700">
+    <div className="flex min-h-screen flex-col bg-white text-slate-700 dark:bg-slate-950 dark:text-slate-300">
       <Header />
       <main>
         <Hero />

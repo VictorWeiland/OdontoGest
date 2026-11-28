@@ -38,6 +38,7 @@ export async function getQuickAppointmentContext(): Promise<{
         select: {
           id: true,
           name: true,
+          status: true,
           times: true,
         },
       }),
@@ -97,6 +98,7 @@ export async function getQuickAppointmentContext(): Promise<{
       data: {
         clinicId: clinic.id,
         clinicName: clinic.name || "OdontoGEST",
+        clinicStatus: clinic.status,
         times: clinic.times,
         services,
         patients,

@@ -58,7 +58,7 @@ export async function bookAppointmentInTransaction(
     const [clinic, service] = await Promise.all([
       tx.user.findUnique({
         where: { id: clinicId },
-        select: { id: true, name: true, times: true },
+        select: { id: true, name: true, times: true, status: true },
       }),
       tx.service.findFirst({
         where: {
@@ -77,6 +77,13 @@ export async function bookAppointmentInTransaction(
 
     if (!clinic) {
       return { error: "Clínica não encontrada." }
+    }
+
+    if (!clinic.status) {
+      return {
+        error:
+          "Esta clínica está fechada temporariamente e não está recebendo agendamentos.",
+      }
     }
 
     if (!service) {

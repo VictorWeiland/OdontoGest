@@ -44,7 +44,7 @@ export function AuthBrandPanel() {
   }).filter((b): b is NonNullable<typeof b> => b !== null)
 
   return (
-    <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-950 p-12 text-white lg:flex">
+    <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-950 p-12 text-white lg:flex dark:from-emerald-900 dark:via-emerald-950 dark:to-slate-950">
       {/* Formas decorativas sutis */}
       <div
         aria-hidden

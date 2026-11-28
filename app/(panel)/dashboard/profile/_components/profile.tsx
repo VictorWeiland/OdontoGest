@@ -144,10 +144,10 @@ export function ProfileContent({ user }: ProfileContentProps) {
   return (
     <div className="mx-auto max-w-[720px] space-y-6">
       <div>
-        <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl">
+        <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl dark:text-emerald-50">
           Meu Perfil
         </h2>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Gerencie as informações da clínica, horários de funcionamento e fuso horário.
         </p>
       </div>
@@ -155,15 +155,15 @@ export function ProfileContent({ user }: ProfileContentProps) {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           {/* Card 1: Avatar e Dados Principais */}
-          <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
-            <CardHeader className="border-b border-slate-100 pb-4">
+          <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <CardHeader className="border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <Building2 className="size-5 text-emerald-600" />
-                <CardTitle className="text-lg font-extrabold text-emerald-950">
+                <Building2 className="size-5 text-emerald-600 dark:text-emerald-400" />
+                <CardTitle className="text-lg font-extrabold text-emerald-950 dark:text-emerald-50">
                   Dados da Clínica
                 </CardTitle>
               </div>
-              <CardDescription className="text-xs text-slate-500">
+              <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
                 Essas informações aparecem para os pacientes na sua página pública de agendamento.
               </CardDescription>
             </CardHeader>
@@ -179,14 +179,14 @@ export function ProfileContent({ user }: ProfileContentProps) {
                   name="name"
                   render={({ field }) => (
                     <FormItem className="sm:col-span-2">
-                      <FormLabel className="text-xs font-semibold text-slate-700">
+                      <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                         Nome da clínica ou consultório:
                       </FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           placeholder="Ex: Clínica Odontológica Sorriso"
-                          className="rounded-xl border-slate-200"
+                          className="rounded-xl border-slate-200 dark:border-slate-700"
                         />
                       </FormControl>
                       <FormMessage />
@@ -199,7 +199,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs font-semibold text-slate-700">
+                      <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                         Telefone / WhatsApp:
                       </FormLabel>
                       <FormControl>
@@ -212,7 +212,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                               field.onChange(formatPhone(e.target.value))
                             }
                             placeholder="(11) 99999-9999"
-                            className="rounded-xl border-slate-200 pl-9"
+                            className="rounded-xl border-slate-200 pl-9 dark:border-slate-700"
                           />
                         </div>
                       </FormControl>
@@ -226,7 +226,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                   name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs font-semibold text-slate-700">
+                      <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                         Status da clínica:
                       </FormLabel>
                       <FormControl>
@@ -234,7 +234,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
-                          <SelectTrigger className="w-full rounded-xl border-slate-200">
+                          <SelectTrigger className="w-full rounded-xl border-slate-200 dark:border-slate-700">
                             <SelectValue placeholder="Selecione o status" />
                           </SelectTrigger>
                           <SelectContent>
@@ -256,7 +256,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                   name="address"
                   render={({ field }) => (
                     <FormItem className="sm:col-span-2">
-                      <FormLabel className="text-xs font-semibold text-slate-700">
+                      <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                         Endereço completo:
                       </FormLabel>
                       <FormControl>
@@ -266,7 +266,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                             {...field}
                             value={field.value || ""}
                             placeholder="Ex: Av. Paulista, 1000, Bela Vista - São Paulo, SP"
-                            className="rounded-xl border-slate-200 pl-9"
+                            className="rounded-xl border-slate-200 pl-9 dark:border-slate-700"
                           />
                         </div>
                       </FormControl>
@@ -279,12 +279,12 @@ export function ProfileContent({ user }: ProfileContentProps) {
           </Card>
 
           {/* Card 2: Horário de Funcionamento */}
-          <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
-            <CardHeader className="border-b border-slate-100 pb-4">
+          <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <CardHeader className="border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Clock className="size-5 text-emerald-600" />
-                  <CardTitle className="text-lg font-extrabold text-emerald-950">
+                  <Clock className="size-5 text-emerald-600 dark:text-emerald-400" />
+                  <CardTitle className="text-lg font-extrabold text-emerald-950 dark:text-emerald-50">
                     Horário de Funcionamento
                   </CardTitle>
                 </div>
@@ -292,14 +292,14 @@ export function ProfileContent({ user }: ProfileContentProps) {
                   {selectedHours.length} horários ativos
                 </Badge>
               </div>
-              <CardDescription className="text-xs text-slate-500">
+              <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
                 Selecione os intervalos de 30 minutos em que sua clínica disponibiliza consultas.
               </CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-4 p-6">
               {selectedHours.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50/50 p-4 text-center text-xs text-amber-800">
+                <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50/50 p-4 text-center text-xs text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
                   Nenhum horário de atendimento selecionado. Pacientes não conseguirão agendar horários online.
                 </div>
               ) : (
@@ -307,7 +307,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                   {selectedHours.map((hour) => (
                     <span
                       key={hour}
-                      className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 font-mono text-xs font-bold text-emerald-800 border border-emerald-200/70"
+                      className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 font-mono text-xs font-bold text-emerald-800 border border-emerald-200/70 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-300"
                     >
                       {hour}
                     </span>
@@ -319,7 +319,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                 type="button"
                 variant="outline"
                 onClick={() => setDialogIsOpen(true)}
-                className="w-full rounded-xl border-emerald-200 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
+                className="w-full rounded-xl border-emerald-200 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800 dark:border-emerald-500/30 dark:text-emerald-300 dark:hover:bg-emerald-500/15"
               >
                 Gerenciar horários disponíveis
               </Button>
@@ -328,16 +328,16 @@ export function ProfileContent({ user }: ProfileContentProps) {
               <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
                 <DialogContent className="max-w-xl rounded-2xl p-6">
                   <DialogHeader className="text-left">
-                    <DialogTitle className="text-xl font-extrabold text-emerald-950">
+                    <DialogTitle className="text-xl font-extrabold text-emerald-950 dark:text-emerald-50">
                       Horários de Atendimento
                     </DialogTitle>
-                    <DialogDescription className="text-xs text-slate-500">
+                    <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
                       Clique nos horários para ativar ou desativar os slots da agenda.
                     </DialogDescription>
                   </DialogHeader>
 
-                  <div className="flex items-center justify-between border-y border-slate-100 py-2.5">
-                    <span className="text-xs font-semibold text-slate-600">
+                  <div className="flex items-center justify-between border-y border-slate-100 py-2.5 dark:border-slate-800">
+                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
                       {selectedHours.length} horários selecionados
                     </span>
                     <div className="flex gap-2">
@@ -346,7 +346,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                         variant="ghost"
                         size="xs"
                         onClick={handleSelectAll}
-                        className="text-xs text-emerald-700 hover:bg-emerald-50"
+                        className="text-xs text-emerald-700 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-500/15"
                       >
                         Selecionar todos
                       </Button>
@@ -355,7 +355,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                         variant="ghost"
                         size="xs"
                         onClick={handleClearAll}
-                        className="text-xs text-slate-500 hover:bg-slate-100"
+                        className="text-xs text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
                       >
                         Limpar
                       </Button>
@@ -373,7 +373,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                           className={`rounded-xl py-2 font-mono text-xs font-bold transition-all duration-150 ${
                             isSelected
                               ? "bg-emerald-500 text-white shadow-2xs shadow-emerald-500/30 scale-102"
-                              : "border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50"
+                              : "border border-slate-200 bg-white text-slate-700 hover:border-emerald-300 hover:bg-emerald-50/50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-emerald-500/50 dark:hover:bg-emerald-500/15"
                           }`}
                         >
                           {hour}
@@ -397,15 +397,15 @@ export function ProfileContent({ user }: ProfileContentProps) {
           </Card>
 
           {/* Card 3: Fuso Horário */}
-          <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
-            <CardHeader className="border-b border-slate-100 pb-4">
+          <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <CardHeader className="border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <Globe className="size-5 text-emerald-600" />
-                <CardTitle className="text-lg font-extrabold text-emerald-950">
+                <Globe className="size-5 text-emerald-600 dark:text-emerald-400" />
+                <CardTitle className="text-lg font-extrabold text-emerald-950 dark:text-emerald-50">
                   Fuso Horário
                 </CardTitle>
               </div>
-              <CardDescription className="text-xs text-slate-500">
+              <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
                 Garante que os relatórios e agendamentos respeitem o horário local da sua região.
               </CardDescription>
             </CardHeader>
@@ -416,7 +416,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                 name="timeZone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs font-semibold text-slate-700">
+                    <FormLabel className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Região / Fuso Horário:
                     </FormLabel>
                     <FormControl>
@@ -424,7 +424,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
                         onValueChange={field.onChange}
                         defaultValue={field.value || "America/Sao_Paulo"}
                       >
-                        <SelectTrigger className="w-full rounded-xl border-slate-200">
+                        <SelectTrigger className="w-full rounded-xl border-slate-200 dark:border-slate-700">
                           <SelectValue placeholder="Selecione o seu fuso horário" />
                         </SelectTrigger>
                         <SelectContent>

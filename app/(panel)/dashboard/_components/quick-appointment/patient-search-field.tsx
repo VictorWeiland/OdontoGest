@@ -79,16 +79,16 @@ export function PatientSearchField({
   }
 
   return (
-    <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-slate-50/50 p-3.5 sm:p-4">
+    <div className="space-y-3 rounded-2xl border border-slate-200/80 bg-slate-50/50 p-3.5 sm:p-4 dark:border-slate-800 dark:bg-slate-900/60">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-bold uppercase tracking-wider text-emerald-900">
+        <span className="text-xs font-bold uppercase tracking-wider text-emerald-900 dark:text-emerald-300">
           1. Paciente
         </span>
         {searchQuery && (
           <button
             type="button"
             onClick={handleClearSearch}
-            className="inline-flex items-center gap-1 rounded-lg px-2 py-0.5 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-200/70 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-emerald-600"
+            className="inline-flex items-center gap-1 rounded-lg px-2 py-0.5 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-200/70 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
           >
             <X className="size-3" aria-hidden />
             Novo paciente
@@ -101,7 +101,7 @@ export function PatientSearchField({
         <div className="relative">
           <Label
             htmlFor="quick-patient-search"
-            className="mb-1.5 text-xs font-semibold text-slate-700"
+            className="mb-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300"
           >
             Buscar paciente anterior (opcional)
           </Label>
@@ -126,7 +126,7 @@ export function PatientSearchField({
                 setSearchQuery(e.target.value)
                 setDropdownOpen(true)
               }}
-              className="h-10 rounded-xl border-slate-200 bg-white pl-9 pr-8 text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+              className="h-10 rounded-xl border-slate-200 bg-white pl-9 pr-8 text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               autoComplete="off"
             />
             {searchQuery && (
@@ -134,7 +134,7 @@ export function PatientSearchField({
                 type="button"
                 onClick={() => setSearchQuery("")}
                 aria-label="Limpar busca de paciente"
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-emerald-600"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:hover:text-slate-200"
               >
                 <X className="size-3.5" aria-hidden />
               </button>
@@ -145,7 +145,7 @@ export function PatientSearchField({
             <div
               role="listbox"
               aria-label="Sugestões de pacientes anteriores"
-              className="absolute z-20 mt-1.5 max-h-48 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg"
+              className="absolute z-20 mt-1.5 max-h-48 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-700 dark:bg-slate-900"
             >
               {filteredPatients.map((patient, idx) => (
                 <button
@@ -155,12 +155,12 @@ export function PatientSearchField({
                   aria-selected={false}
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => handleSelectPatient(patient)}
-                  className="flex w-full flex-col rounded-lg px-3 py-2 text-left transition-colors hover:bg-emerald-50 focus-visible:bg-emerald-50 focus-visible:outline-none"
+                  className="flex w-full flex-col rounded-lg px-3 py-2 text-left transition-colors hover:bg-emerald-50 focus-visible:bg-emerald-50 focus-visible:outline-none dark:hover:bg-slate-800 dark:focus-visible:bg-slate-800"
                 >
-                  <span className="truncate text-xs font-bold text-emerald-950">
+                  <span className="truncate text-xs font-bold text-emerald-950 dark:text-emerald-50">
                     {patient.name}
                   </span>
-                  <span className="truncate text-[11px] text-slate-500">
+                  <span className="truncate text-[11px] text-slate-500 dark:text-slate-400">
                     {patient.phone}
                     {patient.email ? ` • ${patient.email}` : ""}
                   </span>
@@ -173,7 +173,7 @@ export function PatientSearchField({
 
       {/* Nome completo */}
       <div className="space-y-1.5">
-        <Label htmlFor="quick-patient-name" className="text-xs font-semibold text-slate-700">
+        <Label htmlFor="quick-patient-name" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
           Nome do paciente *
         </Label>
         <div className="relative">
@@ -187,7 +187,7 @@ export function PatientSearchField({
             placeholder="Nome completo"
             disabled={disabled}
             aria-invalid={Boolean(errors.name)}
-            className="h-10 rounded-xl border-slate-200 bg-white pl-9 text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+            className="h-10 rounded-xl border-slate-200 bg-white pl-9 text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             {...nameRegisterProps}
             ref={(el) => {
               nameRegisterRef(el)
@@ -198,7 +198,7 @@ export function PatientSearchField({
           />
         </div>
         {errors.name && (
-          <p className="text-xs font-medium text-red-700" role="alert">
+          <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
             {errors.name.message}
           </p>
         )}
@@ -207,7 +207,7 @@ export function PatientSearchField({
       {/* Telefone e E-mail */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="quick-patient-phone" className="text-xs font-semibold text-slate-700">
+          <Label htmlFor="quick-patient-phone" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
             Telefone / WhatsApp *
           </Label>
           <div className="relative">
@@ -221,7 +221,7 @@ export function PatientSearchField({
               placeholder="(11) 99999-9999"
               disabled={disabled}
               aria-invalid={Boolean(errors.phone)}
-              className="h-10 rounded-xl border-slate-200 bg-white pl-9 text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+              className="h-10 rounded-xl border-slate-200 bg-white pl-9 text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               value={phoneValue || ""}
               onChange={(e) =>
                 setValue("phone", formatPhone(e.target.value), {
@@ -231,14 +231,14 @@ export function PatientSearchField({
             />
           </div>
           {errors.phone && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.phone.message}
             </p>
           )}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="quick-patient-email" className="text-xs font-semibold text-slate-700">
+          <Label htmlFor="quick-patient-email" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
             E-mail (opcional)
           </Label>
           <div className="relative">
@@ -252,12 +252,12 @@ export function PatientSearchField({
               placeholder="paciente@exemplo.com"
               disabled={disabled}
               aria-invalid={Boolean(errors.email)}
-              className="h-10 rounded-xl border-slate-200 bg-white pl-9 text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+              className="h-10 rounded-xl border-slate-200 bg-white pl-9 text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               {...register("email")}
             />
           </div>
           {errors.email && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.email.message}
             </p>
           )}

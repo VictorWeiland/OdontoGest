@@ -48,6 +48,9 @@ export async function updateProfile(formData: FormSchema){
         })
 
         revalidatePath("/dashboard/profile")
+        revalidatePath("/dashboard")
+        revalidatePath("/")
+        revalidatePath(`/clinica/${session.user.id}`)
 
         return{
             data: "Clinica Atualizada Com Sucesso",

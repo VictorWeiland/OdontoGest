@@ -62,12 +62,12 @@ export function ButtonPickerAppointment() {
         Hoje
       </Button>
 
-      <div className="flex items-center rounded-xl border border-slate-200 bg-white shadow-2xs">
+      <div className="flex items-center rounded-xl border border-slate-200 bg-white shadow-2xs dark:border-slate-700 dark:bg-slate-800">
         <button
           type="button"
           onClick={handlePrevDay}
           title="Dia anterior"
-          className="inline-flex size-8 items-center justify-center rounded-l-xl text-slate-600 hover:bg-slate-100 hover:text-emerald-700 transition-colors"
+          className="inline-flex size-8 items-center justify-center rounded-l-xl text-slate-600 hover:bg-slate-100 hover:text-emerald-700 transition-colors dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-emerald-300"
           aria-label="Dia anterior"
         >
           <ChevronLeft className="size-4" />
@@ -79,7 +79,7 @@ export function ButtonPickerAppointment() {
             type="date"
             value={currentDate}
             onChange={handleChangeDate}
-            className="h-8 cursor-pointer rounded-lg border-0 bg-transparent py-1 pr-2 pl-7 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-0"
+            className="h-8 cursor-pointer rounded-lg border-0 bg-transparent py-1 pr-2 pl-7 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-0 dark:text-slate-200"
             aria-label="Selecione o dia"
           />
         </label>
@@ -88,7 +88,7 @@ export function ButtonPickerAppointment() {
           type="button"
           onClick={handleNextDay}
           title="Próximo dia"
-          className="inline-flex size-8 items-center justify-center rounded-r-xl text-slate-600 hover:bg-slate-100 hover:text-emerald-700 transition-colors"
+          className="inline-flex size-8 items-center justify-center rounded-r-xl text-slate-600 hover:bg-slate-100 hover:text-emerald-700 transition-colors dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-emerald-300"
           aria-label="Próximo dia"
         >
           <ChevronRight className="size-4" />

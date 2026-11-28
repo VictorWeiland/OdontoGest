@@ -14,7 +14,7 @@ import Link from "next/link"
 import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
-import { Calendar, CheckCircle2, Loader2, Stethoscope } from "lucide-react"
+import { AlertCircle, Calendar, CheckCircle2, Loader2, Stethoscope } from "lucide-react"
 import { toast } from "sonner"
 import {
   Dialog,
@@ -339,7 +339,7 @@ export function QuickAppointmentProvider({
     </div>
   ) : contextError ? (
     <div className="space-y-4 py-4 text-center">
-      <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-800">
+      <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-800 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-200">
         {contextError}
       </p>
       <Button
@@ -357,14 +357,31 @@ export function QuickAppointmentProvider({
       onNewAppointment={handleResetForNew}
       onClose={() => setOpen(false)}
     />
-  ) : contextData && contextData.services.length === 0 ? (
-    <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
-      <Stethoscope className="mx-auto size-8 text-emerald-600" aria-hidden />
+  ) : contextData && !contextData.clinicStatus ? (
+    <div className="space-y-4 rounded-2xl border border-rose-200 bg-rose-50/70 p-5 text-center dark:border-rose-500/30 dark:bg-rose-950/30">
+      <AlertCircle className="mx-auto size-8 text-rose-600 dark:text-rose-400" aria-hidden />
       <div>
-        <h3 className="text-base font-bold text-emerald-950">
+        <h3 className="text-base font-bold text-rose-950 dark:text-rose-100">
+          Clínica temporariamente inativa
+        </h3>
+        <p className="mt-1 text-xs text-rose-800/90 dark:text-rose-200/80">
+          Sua clínica está fechada temporariamente e não pode receber novos agendamentos. Ative o recebimento em Meu Perfil para continuar.
+        </p>
+      </div>
+      <Link href="/dashboard/profile" onClick={() => setOpen(false)}>
+        <Button className="rounded-xl bg-emerald-500 font-semibold text-white hover:bg-emerald-600">
+          Ativar clínica em Meu Perfil
+        </Button>
+      </Link>
+    </div>
+  ) : contextData && contextData.services.length === 0 ? (
+    <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center dark:border-slate-800 dark:bg-slate-900/70">
+      <Stethoscope className="mx-auto size-8 text-emerald-600 dark:text-emerald-400" aria-hidden />
+      <div>
+        <h3 className="text-base font-bold text-emerald-950 dark:text-emerald-50">
           Nenhum serviço ativo encontrado
         </h3>
-        <p className="mt-1 text-xs text-slate-600">
+        <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
           Cadastre ou ative ao menos um procedimento para realizar agendamentos rápidos.
         </p>
       </div>
@@ -375,13 +392,13 @@ export function QuickAppointmentProvider({
       </Link>
     </div>
   ) : contextData && contextData.times.length === 0 ? (
-    <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center">
-      <Calendar className="mx-auto size-8 text-emerald-600" aria-hidden />
+    <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center dark:border-slate-800 dark:bg-slate-900/70">
+      <Calendar className="mx-auto size-8 text-emerald-600 dark:text-emerald-400" aria-hidden />
       <div>
-        <h3 className="text-base font-bold text-emerald-950">
+        <h3 className="text-base font-bold text-emerald-950 dark:text-emerald-50">
           Horários da clínica não configurados
         </h3>
-        <p className="mt-1 text-xs text-slate-600">
+        <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
           Configure os horários de atendimento no seu perfil antes de agendar.
         </p>
       </div>
@@ -397,7 +414,7 @@ export function QuickAppointmentProvider({
         {submitError && (
           <div
             role="alert"
-            className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs font-semibold text-red-800"
+            className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs font-semibold text-red-800 dark:border-red-900/60 dark:bg-red-950/50 dark:text-red-200"
           >
             {submitError}
           </div>
@@ -418,7 +435,7 @@ export function QuickAppointmentProvider({
       {/* 2. Serviço e 3. Data */}
       <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
         <div className="space-y-1.5 min-w-0">
-          <Label htmlFor="quick-service" className="text-xs font-semibold text-slate-700">
+          <Label htmlFor="quick-service" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
             2. Serviço *
           </Label>
           <Select
@@ -446,7 +463,7 @@ export function QuickAppointmentProvider({
             <SelectTrigger
               id="quick-service"
               aria-invalid={Boolean(errors.serviceId)}
-              className="h-10 w-full rounded-xl border-slate-200 bg-white text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+              className="data-[size=default]:h-10 w-full rounded-xl border-slate-200 bg-white text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             >
               <SelectValue placeholder="Selecione um serviço">
                 {(val: string) => {
@@ -456,7 +473,11 @@ export function QuickAppointmentProvider({
                 }}
               </SelectValue>
             </SelectTrigger>
-            <SelectContent className="rounded-xl">
+            <SelectContent
+              align="start"
+              alignItemWithTrigger={false}
+              className="rounded-xl"
+            >
               {contextData.services.map((service) => (
                 <SelectItem key={service.id} value={service.id}>
                   <span>
@@ -468,14 +489,14 @@ export function QuickAppointmentProvider({
             </SelectContent>
           </Select>
           {errors.serviceId && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.serviceId.message}
             </p>
           )}
         </div>
 
         <div className="space-y-1.5 min-w-0">
-          <Label htmlFor="quick-date" className="text-xs font-semibold text-slate-700">
+          <Label htmlFor="quick-date" className="text-xs font-semibold text-slate-700 dark:text-slate-300">
             3. Data *
           </Label>
           <Input
@@ -484,7 +505,7 @@ export function QuickAppointmentProvider({
             min={todayIso}
             disabled={isSubmitting}
             aria-invalid={Boolean(errors.date)}
-            className="h-10 rounded-xl border-slate-200 bg-white text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+            className="h-10 rounded-xl border-slate-200 bg-white text-sm focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             value={selectedDate}
             onChange={(e) => {
               const nextDate = e.target.value
@@ -494,7 +515,7 @@ export function QuickAppointmentProvider({
             }}
           />
           {errors.date && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.date.message}
             </p>
           )}
@@ -504,11 +525,11 @@ export function QuickAppointmentProvider({
       {/* 4. Horários livres */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between gap-2">
-          <Label className="text-xs font-semibold text-slate-700">
+          <Label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
             4. Horário livre *
           </Label>
           {selectedService && (
-            <span className="text-[11px] font-medium text-slate-500">
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
               Duração: {formatDurationLabel(selectedService.duration)}
             </span>
           )}
@@ -531,39 +552,39 @@ export function QuickAppointmentProvider({
 
       {/* Resumo antes de confirmar */}
       {selectedService && selectedDate && (
-        <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/50 p-3.5 text-xs">
-          <p className="font-bold uppercase tracking-wider text-emerald-900">
+        <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/50 p-3.5 text-xs dark:border-emerald-500/25 dark:bg-emerald-950/30">
+          <p className="font-bold uppercase tracking-wider text-emerald-900 dark:text-emerald-300">
             Resumo do agendamento
           </p>
-          <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5 text-slate-700">
+          <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5 text-slate-700 dark:text-slate-300">
             <div className="min-w-0">
-              <span className="text-slate-500">Serviço: </span>
-              <span className="font-semibold text-emerald-950 truncate">
+              <span className="text-slate-500 dark:text-slate-400">Serviço: </span>
+              <span className="font-semibold text-emerald-950 truncate dark:text-emerald-50">
                 {selectedService.name}
               </span>
             </div>
             <div>
-              <span className="text-slate-500">Duração: </span>
-              <span className="font-semibold text-emerald-950">
+              <span className="text-slate-500 dark:text-slate-400">Duração: </span>
+              <span className="font-semibold text-emerald-950 dark:text-emerald-50">
                 {formatDurationLabel(selectedService.duration)}
               </span>
             </div>
             <div className="col-span-2 sm:col-span-1">
-              <span className="text-slate-500">Data: </span>
-              <span className="font-semibold text-emerald-950">
+              <span className="text-slate-500 dark:text-slate-400">Data: </span>
+              <span className="font-semibold text-emerald-950 dark:text-emerald-50">
                 {formatAppointmentFullDate(selectedDate)}
               </span>
             </div>
             <div>
-              <span className="text-slate-500">Horário: </span>
-              <span className="font-semibold text-emerald-950">
+              <span className="text-slate-500 dark:text-slate-400">Horário: </span>
+              <span className="font-semibold text-emerald-950 dark:text-emerald-50">
                 {selectedTime || "Selecione acima"}
               </span>
             </div>
           </div>
-          <div className="mt-2 flex items-center justify-between border-t border-emerald-100 pt-2">
-            <span className="font-medium text-slate-600">Valor total</span>
-            <span className="text-sm font-extrabold text-emerald-700">
+          <div className="mt-2 flex items-center justify-between border-t border-emerald-100 pt-2 dark:border-emerald-500/20">
+            <span className="font-medium text-slate-600 dark:text-slate-300">Valor total</span>
+            <span className="text-sm font-extrabold text-emerald-700 dark:text-emerald-400">
               {formatCurrency(selectedService.price / 100)}
             </span>
           </div>
@@ -571,13 +592,13 @@ export function QuickAppointmentProvider({
       )}
 
       {/* Ações */}
-      <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-3 sm:flex-row sm:justify-end">
+      <div className="flex flex-col-reverse gap-2 border-t border-slate-100 pt-3 sm:flex-row sm:justify-end dark:border-slate-800">
         <Button
           type="button"
           variant="outline"
           disabled={isSubmitting}
           onClick={() => setOpen(false)}
-          className="h-10 rounded-xl border-slate-200 text-xs font-semibold text-slate-700 sm:w-28"
+          className="h-10 rounded-xl border-slate-200 text-xs font-semibold text-slate-700 sm:w-28 dark:border-slate-700 dark:text-slate-200"
         >
           Cancelar
         </Button>
@@ -612,11 +633,11 @@ export function QuickAppointmentProvider({
             side="bottom"
             className="flex max-h-[92dvh] flex-col gap-0 overflow-hidden rounded-t-2xl p-0"
           >
-            <SheetHeader className="border-b border-slate-100 px-5 py-4 text-left">
-              <SheetTitle className="text-lg font-extrabold text-emerald-950">
+            <SheetHeader className="border-b border-slate-100 px-5 py-4 text-left dark:border-slate-800">
+              <SheetTitle className="text-lg font-extrabold text-emerald-950 dark:text-emerald-50">
                 Agendamento rápido
               </SheetTitle>
-              <SheetDescription className="text-xs text-slate-500">
+              <SheetDescription className="text-xs text-slate-500 dark:text-slate-400">
                 Cadastre uma consulta direto pelo painel da clínica.
               </SheetDescription>
             </SheetHeader>
@@ -626,11 +647,11 @@ export function QuickAppointmentProvider({
       ) : (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent className="flex max-h-[90vh] w-full max-w-[calc(100vw-2rem)] flex-col gap-0 overflow-hidden rounded-2xl p-0 sm:max-w-[520px]">
-            <DialogHeader className="border-b border-slate-100 px-6 py-4 text-left">
-              <DialogTitle className="text-xl font-extrabold text-emerald-950">
+            <DialogHeader className="border-b border-slate-100 px-6 py-4 text-left dark:border-slate-800">
+              <DialogTitle className="text-xl font-extrabold text-emerald-950 dark:text-emerald-50">
                 Agendamento rápido
               </DialogTitle>
-              <DialogDescription className="text-xs text-slate-500">
+              <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
                 Cadastre uma consulta sem sair do painel da clínica.
               </DialogDescription>
             </DialogHeader>

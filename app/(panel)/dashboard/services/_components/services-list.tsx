@@ -118,11 +118,11 @@ export function ServiceList({ services, permission }: ServiceListProps) {
   return (
     <div className="space-y-6">
       {/* Banner de Indicador de Limite do Plano */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs sm:p-5">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs sm:p-5 dark:border-slate-800 dark:bg-slate-900">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wide dark:text-slate-400">
                 Uso do Plano
               </span>
               <Badge variant={limitReached ? "warning" : "secondary"}>
@@ -131,7 +131,7 @@ export function ServiceList({ services, permission }: ServiceListProps) {
                   : `${serviceCount} de ${maxServices} serviços`}
               </Badge>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               {permission.expired
                 ? "Seu período de teste gratuito expirou. Escolha um plano para continuar cadastrando serviços."
                 : isUnlimited
@@ -156,7 +156,7 @@ export function ServiceList({ services, permission }: ServiceListProps) {
 
         {/* Barra de progresso */}
         {!isUnlimited && (
-          <div className="mt-3.5 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+          <div className="mt-3.5 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
             <div
               className={`h-full rounded-full transition-all duration-300 ${
                 limitReached ? "bg-amber-500" : "bg-emerald-500"
@@ -171,13 +171,13 @@ export function ServiceList({ services, permission }: ServiceListProps) {
 
       {/* Card da Lista de Serviços */}
       <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
-        <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
-          <CardHeader className="flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <CardHeader className="flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
             <div>
-              <CardTitle className="text-xl font-extrabold text-emerald-950 sm:text-2xl">
+              <CardTitle className="text-xl font-extrabold text-emerald-950 sm:text-2xl dark:text-emerald-50">
                 Serviços Cadastrados
               </CardTitle>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Gerencie procedimentos, durações e valores para agendamento online.
               </p>
             </div>
@@ -198,9 +198,9 @@ export function ServiceList({ services, permission }: ServiceListProps) {
               <Link href="/dashboard/plans">
                 <Button
                   variant="outline"
-                  className="gap-1.5 rounded-xl border-amber-300 text-amber-800 hover:bg-amber-50 text-xs font-semibold"
+                  className="gap-1.5 rounded-xl border-amber-300 text-amber-800 hover:bg-amber-50 text-xs font-semibold dark:border-amber-500/40 dark:text-amber-300 dark:hover:bg-amber-500/15"
                 >
-                  <Sparkles className="size-3.5 text-amber-600" />
+                  <Sparkles className="size-3.5 text-amber-600 dark:text-amber-400" />
                   Upgrade de plano
                 </Button>
               </Link>
@@ -256,11 +256,11 @@ export function ServiceList({ services, permission }: ServiceListProps) {
                 {displayServices.map((service) => (
                   <article
                     key={service.id}
-                    className="group flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
+                    className="group flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/80 dark:hover:border-emerald-500/50"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2">
-                        <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 shadow-2xs">
+                        <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 shadow-2xs dark:bg-emerald-500/15 dark:text-emerald-400">
                           <Stethoscope className="size-4" />
                         </div>
 
@@ -275,8 +275,8 @@ export function ServiceList({ services, permission }: ServiceListProps) {
                             }
                             className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold transition-colors ${
                               service.status
-                                ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
-                                : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                                ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25"
+                                : "bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
                             }`}
                           >
                             <Power className="size-3" />
@@ -285,22 +285,22 @@ export function ServiceList({ services, permission }: ServiceListProps) {
                         </div>
                       </div>
 
-                      <h4 className="mt-3 font-bold text-base text-emerald-950 line-clamp-1">
+                      <h4 className="mt-3 font-bold text-base text-emerald-950 line-clamp-1 dark:text-emerald-50">
                         {service.name}
                       </h4>
 
-                      <div className="mt-2 flex items-center gap-2 text-xs text-slate-500">
+                      <div className="mt-2 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                         <Clock className="size-3.5 text-slate-400" />
                         <span>Duração: {formatDuration(service.duration)}</span>
                       </div>
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3">
+                    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800">
                       <div>
-                        <span className="text-[10px] text-slate-400 block leading-none">
+                        <span className="text-[10px] text-slate-400 block leading-none dark:text-slate-500">
                           Valor
                         </span>
-                        <span className="text-base font-extrabold text-emerald-600">
+                        <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400">
                           {formatCurrency(service.price / 100)}
                         </span>
                       </div>
@@ -310,7 +310,7 @@ export function ServiceList({ services, permission }: ServiceListProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleEditService(service)}
-                          className="size-8 rounded-lg text-slate-500 hover:bg-emerald-50 hover:text-emerald-700"
+                          className="size-8 rounded-lg text-slate-500 hover:bg-emerald-50 hover:text-emerald-700 dark:text-slate-400 dark:hover:bg-emerald-500/15 dark:hover:text-emerald-300"
                           title="Editar serviço"
                           aria-label={`Editar ${service.name}`}
                         >
@@ -321,7 +321,7 @@ export function ServiceList({ services, permission }: ServiceListProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => setServiceToDelete(service)}
-                          className="size-8 rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-600"
+                          className="size-8 rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-500/15 dark:hover:text-rose-400"
                           title="Excluir serviço"
                           aria-label={`Excluir ${service.name}`}
                         >
@@ -344,13 +344,13 @@ export function ServiceList({ services, permission }: ServiceListProps) {
       >
         <DialogContent className="sm:max-w-md rounded-2xl p-6">
           <DialogHeader className="text-left">
-            <div className="flex size-11 items-center justify-center rounded-2xl bg-rose-50 text-rose-600">
+            <div className="flex size-11 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 dark:bg-rose-500/15 dark:text-rose-400">
               <AlertTriangle className="size-6" />
             </div>
-            <DialogTitle className="mt-3 text-lg font-extrabold text-emerald-950">
+            <DialogTitle className="mt-3 text-lg font-extrabold text-emerald-950 dark:text-emerald-50">
               Excluir Serviço
             </DialogTitle>
-            <DialogDescription className="text-xs text-slate-500">
+            <DialogDescription className="text-xs text-slate-500 dark:text-slate-400">
               Tem certeza que deseja excluir o serviço{" "}
               <strong>&ldquo;{serviceToDelete?.name}&rdquo;</strong>? Essa ação é
               irreversível e removerá o procedimento da sua lista de agendamentos.
@@ -363,7 +363,7 @@ export function ServiceList({ services, permission }: ServiceListProps) {
               variant="outline"
               disabled={deleting}
               onClick={() => setServiceToDelete(null)}
-              className="rounded-xl border-slate-200"
+              className="rounded-xl border-slate-200 dark:border-slate-700"
             >
               Cancelar
             </Button>

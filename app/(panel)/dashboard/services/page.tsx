@@ -14,10 +14,10 @@ export default async function Services() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl">
+        <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl dark:text-emerald-50">
           Serviços da Clínica
         </h2>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Cadastre e gerencie os procedimentos disponíveis para agendamento online.
         </p>
       </div>

@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SessionAuthProvider } from '@/components/session-auth'
-import { Toaster } from 'sonner'
 import { QueryClientContext } from "@/providers/queryClient";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { ThemedToaster } from "@/components/themed-toaster";
 import { SITE_URL } from "@/lib/landing-config";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -42,22 +43,27 @@ export const metadata: Metadata = {
   },
 };
 
+const themeInitScript = `(function(){try{var t=localStorage.getItem('odontogest-theme');var r=(t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches))?'dark':'light';var d=document.documentElement;d.classList.toggle('dark',r==='dark');d.style.colorScheme=r;}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className="scroll-smooth">
+    <html lang="pt-BR" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body
         className={`${jakarta.variable} font-sans h-full antialiased`}
       >
-        <SessionAuthProvider>
-          <QueryClientContext>
-            <Toaster
-              duration={2500}
-            />
-            {children}
-          </QueryClientContext>
-        </SessionAuthProvider>
+        <ThemeProvider>
+          <SessionAuthProvider>
+            <QueryClientContext>
+              <ThemedToaster />
+              {children}
+            </QueryClientContext>
+          </SessionAuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -34,24 +34,24 @@ const faqs = [
 
 export function Faq() {
     return (
-        <section id="faq" className="bg-white py-20">
+        <section id="faq" className="bg-white py-20 dark:bg-slate-950">
             <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
                 <Reveal className="mb-12 text-center">
-                    <h2 className="text-3xl font-extrabold tracking-tight text-emerald-950 sm:text-4xl">
+                    <h2 className="text-3xl font-extrabold tracking-tight text-emerald-950 sm:text-4xl dark:text-emerald-50">
                         Perguntas frequentes
                     </h2>
-                    <p className="mt-2 text-sm text-slate-500">
+                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                         Tire suas dúvidas sobre o funcionamento do OdontoGEST para pacientes e clínicas.
                     </p>
                 </Reveal>
                 <div className="space-y-3">
                     {faqs.map(({ q, a }) => (
-                        <details key={q} className="group rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition-shadow duration-200 open:shadow-md">
-                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-md font-semibold text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-600 [&::-webkit-details-marker]:hidden">
+                        <details key={q} className="group rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm transition-shadow duration-200 open:shadow-md dark:border-slate-800 dark:bg-slate-900">
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-md font-semibold text-emerald-950 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-600 dark:text-emerald-50 [&::-webkit-details-marker]:hidden">
                                 <span>{q}</span>
-                                <ChevronDown className="size-5 shrink-0 text-emerald-600 transition-transform duration-200 group-open:rotate-180" aria-hidden />
+                                <ChevronDown className="size-5 shrink-0 text-emerald-600 transition-transform duration-200 group-open:rotate-180 dark:text-emerald-400" aria-hidden />
                             </summary>
-                            <p className="mt-3 max-w-[60ch] text-sm leading-relaxed text-slate-600">{a}</p>
+                            <p className="mt-3 max-w-[60ch] text-sm leading-relaxed text-slate-600 dark:text-slate-400">{a}</p>
                         </details>
                     ))}
                 </div>

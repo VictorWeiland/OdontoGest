@@ -6,7 +6,7 @@ interface PremiumCardBadgeProps {
 export function PremiumCardBadge({ plan }: PremiumCardBadgeProps) {
     const label = plan === "PROFESSIONAL" ? "Destaque" : "Parceiro"
     return (
-        <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-900">
+        <span className="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-900 dark:bg-amber-500/20 dark:text-amber-200">
             {label}
         </span>
     )

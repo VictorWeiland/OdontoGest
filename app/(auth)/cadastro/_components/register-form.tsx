@@ -95,7 +95,7 @@ export function RegisterForm() {
       <div>
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 rounded-lg px-1 py-0.5 text-xs font-semibold text-slate-600 transition-colors duration-150 hover:text-emerald-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+          className="inline-flex items-center gap-1.5 rounded-lg px-1 py-0.5 text-xs font-semibold text-slate-600 transition-colors duration-150 hover:text-emerald-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400"
         >
           <ArrowLeft className="size-3.5" aria-hidden />
           Voltar para o site
@@ -103,10 +103,10 @@ export function RegisterForm() {
       </div>
 
       <div>
-        <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl">
+        <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl dark:text-emerald-50">
           Crie sua conta
         </h2>
-        <p className="mt-1.5 text-sm text-slate-600">
+        <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400">
           Cadastre sua clínica ou consultório para começar a usar o OdontoGEST.
         </p>
       </div>
@@ -115,7 +115,7 @@ export function RegisterForm() {
         {serverError && (
           <div
             role="alert"
-            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800"
+            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-200"
           >
             {serverError}
           </div>
@@ -124,12 +124,12 @@ export function RegisterForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
         <div className="space-y-1.5">
-          <Label htmlFor="name" className="text-slate-700 font-semibold">
+          <Label htmlFor="name" className="text-slate-700 font-semibold dark:text-slate-200">
             Nome da clínica ou profissional
           </Label>
           <div className="relative">
             <User
-              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500"
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
               aria-hidden
             />
             <Input
@@ -139,24 +139,24 @@ export function RegisterForm() {
               placeholder="Ex.: Clínica Sorriso ou Dra. Ana Silva"
               disabled={isBusy}
               aria-invalid={Boolean(errors.name)}
-              className="h-11 rounded-xl border-slate-200 pl-10 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+              className="h-11 rounded-xl border-slate-200 pl-10 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
               {...register("name")}
             />
           </div>
           {errors.name && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.name.message}
             </p>
           )}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="email" className="text-slate-700 font-semibold">
+          <Label htmlFor="email" className="text-slate-700 font-semibold dark:text-slate-200">
             E-mail
           </Label>
           <div className="relative">
             <Mail
-              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500"
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
               aria-hidden
             />
             <Input
@@ -166,24 +166,24 @@ export function RegisterForm() {
               placeholder="seu@consultorio.com.br"
               disabled={isBusy}
               aria-invalid={Boolean(errors.email)}
-              className="h-11 rounded-xl border-slate-200 pl-10 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+              className="h-11 rounded-xl border-slate-200 pl-10 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
               {...register("email")}
             />
           </div>
           {errors.email && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.email.message}
             </p>
           )}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="password" className="text-slate-700 font-semibold">
+          <Label htmlFor="password" className="text-slate-700 font-semibold dark:text-slate-200">
             Senha
           </Label>
           <div className="relative">
             <Lock
-              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500"
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
               aria-hidden
             />
             <Input
@@ -193,13 +193,13 @@ export function RegisterForm() {
               placeholder="Mínimo de 8 caracteres"
               disabled={isBusy}
               aria-invalid={Boolean(errors.password)}
-              className="h-11 rounded-xl border-slate-200 pl-10 pr-11 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+              className="h-11 rounded-xl border-slate-200 pl-10 pr-11 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
               {...register("password")}
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-2 focus-visible:outline-emerald-600"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
               aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
             >
               {showPassword ? (
@@ -210,7 +210,7 @@ export function RegisterForm() {
             </button>
           </div>
           {errors.password && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.password.message}
             </p>
           )}
@@ -219,13 +219,13 @@ export function RegisterForm() {
         <div className="space-y-1.5">
           <Label
             htmlFor="confirmPassword"
-            className="text-slate-700 font-semibold"
+            className="text-slate-700 font-semibold dark:text-slate-200"
           >
             Confirmar senha
           </Label>
           <div className="relative">
             <Lock
-              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500"
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
               aria-hidden
             />
             <Input
@@ -235,13 +235,13 @@ export function RegisterForm() {
               placeholder="Repita sua senha"
               disabled={isBusy}
               aria-invalid={Boolean(errors.confirmPassword)}
-              className="h-11 rounded-xl border-slate-200 pl-10 pr-11 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+              className="h-11 rounded-xl border-slate-200 pl-10 pr-11 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
               {...register("confirmPassword")}
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-2 focus-visible:outline-emerald-600"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
               aria-label={
                 showConfirmPassword
                   ? "Ocultar confirmação de senha"
@@ -256,7 +256,7 @@ export function RegisterForm() {
             </button>
           </div>
           {errors.confirmPassword && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.confirmPassword.message}
             </p>
           )}
@@ -269,19 +269,19 @@ export function RegisterForm() {
               type="checkbox"
               disabled={isBusy}
               aria-invalid={Boolean(errors.termsAccepted)}
-              className="mt-0.5 size-4 shrink-0 rounded border-slate-300 text-emerald-600 accent-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+              className="mt-0.5 size-4 shrink-0 rounded border-slate-300 text-emerald-600 accent-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 dark:border-slate-700 dark:bg-slate-900"
               {...register("termsAccepted")}
             />
             <label
               htmlFor="termsAccepted"
-              className="text-xs leading-relaxed text-slate-600 select-none"
+              className="text-xs leading-relaxed text-slate-600 select-none dark:text-slate-400"
             >
               Li e concordo com os{" "}
               <Link
                 href="/termos"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
+                className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300"
               >
                 Termos de Uso
               </Link>{" "}
@@ -290,7 +290,7 @@ export function RegisterForm() {
                 href="/privacidade"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800"
+                className="font-semibold text-emerald-700 underline underline-offset-2 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300"
               >
                 Política de Privacidade
               </Link>
@@ -298,7 +298,7 @@ export function RegisterForm() {
             </label>
           </div>
           {errors.termsAccepted && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.termsAccepted.message}
             </p>
           )}
@@ -322,8 +322,8 @@ export function RegisterForm() {
 
       {/* Divisor "ou" */}
       <div className="relative flex items-center justify-center">
-        <div className="w-full border-t border-slate-200" />
-        <span className="absolute bg-white px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+        <span className="absolute bg-white px-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:bg-slate-950 dark:text-slate-400">
           ou
         </span>
       </div>
@@ -334,7 +334,7 @@ export function RegisterForm() {
         variant="outline"
         onClick={handleGoogleRegister}
         disabled={isBusy}
-        className="h-11 w-full gap-2.5 rounded-xl border-slate-200 bg-white text-sm font-semibold text-slate-700 transition-colors duration-150 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-emerald-600"
+        className="h-11 w-full gap-2.5 rounded-xl border-slate-200 bg-white text-sm font-semibold text-slate-700 transition-colors duration-150 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-emerald-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
       >
         {isGoogleLoading ? (
           <Loader2 className="size-4 animate-spin" aria-hidden />
@@ -361,11 +361,11 @@ export function RegisterForm() {
         <span>Entrar com Google</span>
       </Button>
 
-      <p className="text-center text-sm text-slate-600">
+      <p className="text-center text-sm text-slate-600 dark:text-slate-400">
         Já tem uma conta?{" "}
         <Link
           href={`/login${rawCallbackUrl ? `?callbackUrl=${encodeURIComponent(targetUrl)}` : ""}`}
-          className="rounded-md font-bold text-emerald-700 hover:text-emerald-800 hover:underline focus-visible:outline-2 focus-visible:outline-emerald-600"
+          className="rounded-md font-bold text-emerald-700 hover:text-emerald-800 hover:underline focus-visible:outline-2 focus-visible:outline-emerald-600 dark:text-emerald-400 dark:hover:text-emerald-300"
         >
           Entrar
         </Link>

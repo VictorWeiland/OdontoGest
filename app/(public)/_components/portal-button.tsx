@@ -14,7 +14,7 @@ interface PortalButtonProps {
 
 const styles = {
     primary: "bg-emerald-500 text-white hover:bg-emerald-600 shadow-sm shadow-emerald-500/30",
-    light: "bg-white text-emerald-800 hover:bg-emerald-50 shadow-sm",
+    light: "bg-white text-emerald-800 hover:bg-emerald-50 shadow-sm dark:bg-slate-900 dark:text-emerald-300 dark:hover:bg-slate-800",
 };
 
 /** Botão "Portal da Clínica": leva ao login (/login) ou ao painel (/dashboard) se já logado. */

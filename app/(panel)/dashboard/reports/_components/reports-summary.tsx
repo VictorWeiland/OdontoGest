@@ -18,21 +18,21 @@ export function ReportsSummary({ data }: ReportsSummaryProps) {
       value: data.appointmentCount.toLocaleString("pt-BR"),
       icon: CalendarDays,
       description: "Consultas marcadas no período",
-      badgeColor: "bg-emerald-50 text-emerald-600",
+      badgeColor: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400",
     },
     {
       label: "Faturamento Estimado",
       value: currencyFormatter.format(data.estimatedRevenueCents / 100),
       icon: DollarSign,
       description: "Valor bruto com base na tabela",
-      badgeColor: "bg-teal-50 text-teal-600",
+      badgeColor: "bg-teal-50 text-teal-600 dark:bg-teal-500/15 dark:text-teal-400",
     },
     {
       label: "Ticket Médio por Consulta",
       value: currencyFormatter.format(data.averageTicketCents / 100),
       icon: TrendingUp,
       description: "Média estimada por agendamento",
-      badgeColor: "bg-emerald-50 text-emerald-700",
+      badgeColor: "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
     },
   ]
 
@@ -47,11 +47,11 @@ export function ReportsSummary({ data }: ReportsSummaryProps) {
         return (
           <Card
             key={metric.label}
-            className="rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md"
+            className="rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
           >
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide dark:text-slate-400">
                   {metric.label}
                 </span>
                 <div
@@ -62,10 +62,10 @@ export function ReportsSummary({ data }: ReportsSummaryProps) {
               </div>
 
               <div className="mt-3">
-                <p className="text-2xl font-extrabold text-emerald-950 sm:text-3xl">
+                <p className="text-2xl font-extrabold text-emerald-950 sm:text-3xl dark:text-emerald-50">
                   {metric.value}
                 </p>
-                <p className="mt-1 text-xs text-slate-400">
+                <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
                   {metric.description}
                 </p>
               </div>

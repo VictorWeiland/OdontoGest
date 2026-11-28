@@ -48,10 +48,10 @@ export function ScheduleTimeList({
             className={cn(
               "h-11 rounded-xl font-mono text-xs font-bold transition-all duration-150 select-none",
               isSelected
-                ? "border-emerald-500 bg-emerald-500 text-white shadow-xs shadow-emerald-500/30 scale-102 hover:bg-emerald-600"
+                ? "border-emerald-500 bg-emerald-500 text-white shadow-xs shadow-emerald-500/30 scale-102 hover:bg-emerald-600 dark:border-emerald-500 dark:bg-emerald-500 dark:text-white"
                 : slotEnabled
-                ? "border-slate-200 bg-white text-slate-800 hover:border-emerald-300 hover:bg-emerald-50/50"
-                : "border-slate-100 bg-slate-50 text-slate-300 cursor-not-allowed opacity-50 line-through"
+                ? "border-slate-200 bg-white text-slate-800 hover:border-emerald-300 hover:bg-emerald-50/50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-emerald-500/60 dark:hover:bg-emerald-500/15"
+                : "border-slate-100 bg-slate-50 text-slate-300 cursor-not-allowed opacity-50 line-through dark:border-slate-800 dark:bg-slate-900 dark:text-slate-600"
             )}
             aria-pressed={isSelected}
             aria-label={`Horário ${slot.time}${!slotEnabled ? " indisponível" : ""}`}

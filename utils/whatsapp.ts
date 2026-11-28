@@ -1,6 +1,12 @@
 /**
- * Utilitários compartilhados de formatação de data de agendamento e link WhatsApp.
+ * Utilitários compartilhados de formatação de data de agendamento e links WhatsApp.
  */
+
+export function normalizeBrazilianPhone(phone: string): string {
+  const cleanPhone = phone.replace(/\D/g, "")
+  if (!cleanPhone) return ""
+  return cleanPhone.startsWith("55") ? cleanPhone : `55${cleanPhone}`
+}
 
 export function formatAppointmentFullDate(dateInput: Date | string): string {
   let targetDate: Date
@@ -35,8 +41,7 @@ export function buildConfirmationWhatsAppUrl({
   time: string
   clinicName?: string | null
 }): string {
-  const cleanPhone = patientPhone.replace(/\D/g, "")
-  const fullPhone = cleanPhone.startsWith("55") ? cleanPhone : `55${cleanPhone}`
+  const fullPhone = normalizeBrazilianPhone(patientPhone)
   const formattedDate = formatAppointmentFullDate(date)
   const clinicLabel = clinicName || "OdontoGEST"
 
@@ -45,4 +50,33 @@ export function buildConfirmationWhatsAppUrl({
   )
 
   return `https://wa.me/${fullPhone}?text=${message}`
+}
+
+export function buildPriorityTriageWhatsAppUrl({
+  clinicPhone,
+  clinicName,
+  patientName,
+  reason,
+  painLevel,
+  painLabel,
+}: {
+  clinicPhone: string
+  clinicName?: string | null
+  patientName: string
+  reason: string
+  painLevel: number
+  painLabel: string
+}): string {
+  const fullPhone = normalizeBrazilianPhone(clinicPhone)
+  const clinicLabel = clinicName || "OdontoGEST"
+  const cleanName = patientName.trim()
+  const greetingName = cleanName ? `Meu nome é ${cleanName}. ` : ""
+
+  const lines = [
+    `Olá, ${clinicLabel}! ${greetingName}Preciso de orientação para atendimento odontológico prioritário.`,
+    `• *Urgência:* ${reason}`,
+    `• *Intensidade da dor:* ${painLevel}/10 • ${painLabel}`,
+  ]
+
+  return `https://wa.me/${fullPhone}?text=${encodeURIComponent(lines.join("\n"))}`
 }

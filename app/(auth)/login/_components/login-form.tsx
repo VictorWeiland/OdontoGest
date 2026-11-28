@@ -130,7 +130,7 @@ export function LoginForm() {
       <div>
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 rounded-lg px-1 py-0.5 text-xs font-semibold text-slate-600 transition-colors duration-150 hover:text-emerald-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+          className="inline-flex items-center gap-1.5 rounded-lg px-1 py-0.5 text-xs font-semibold text-slate-600 transition-colors duration-150 hover:text-emerald-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400"
         >
           <ArrowLeft className="size-3.5" aria-hidden />
           Voltar para o site
@@ -138,10 +138,10 @@ export function LoginForm() {
       </div>
 
       <div>
-        <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl">
+        <h2 className="text-2xl font-extrabold tracking-tight text-emerald-950 sm:text-3xl dark:text-emerald-50">
           Acesse sua clínica
         </h2>
-        <p className="mt-1.5 text-sm text-slate-600">
+        <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400">
           Entre com seu e-mail e senha ou acesse com sua conta Google.
         </p>
       </div>
@@ -151,7 +151,7 @@ export function LoginForm() {
         {activeError && (
           <div
             role="alert"
-            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800"
+            className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-200"
           >
             {activeError}
           </div>
@@ -160,12 +160,12 @@ export function LoginForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
         <div className="space-y-1.5">
-          <Label htmlFor="email" className="text-slate-700 font-semibold">
+          <Label htmlFor="email" className="text-slate-700 font-semibold dark:text-slate-200">
             E-mail
           </Label>
           <div className="relative">
             <Mail
-              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500"
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
               aria-hidden
             />
             <Input
@@ -175,24 +175,24 @@ export function LoginForm() {
               placeholder="seu@consultorio.com.br"
               disabled={isBusy}
               aria-invalid={Boolean(errors.email)}
-              className="h-11 rounded-xl border-slate-200 pl-10 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+              className="h-11 rounded-xl border-slate-200 pl-10 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
               {...register("email")}
             />
           </div>
           {errors.email && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.email.message}
             </p>
           )}
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="password" className="text-slate-700 font-semibold">
+          <Label htmlFor="password" className="text-slate-700 font-semibold dark:text-slate-200">
             Senha
           </Label>
           <div className="relative">
             <Lock
-              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500"
+              className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
               aria-hidden
             />
             <Input
@@ -202,13 +202,13 @@ export function LoginForm() {
               placeholder="Sua senha de acesso"
               disabled={isBusy}
               aria-invalid={Boolean(errors.password)}
-              className="h-11 rounded-xl border-slate-200 pl-10 pr-11 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25"
+              className="h-11 rounded-xl border-slate-200 pl-10 pr-11 text-slate-900 placeholder:text-slate-400 focus-visible:border-emerald-500 focus-visible:ring-emerald-500/25 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
               {...register("password")}
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-2 focus-visible:outline-emerald-600"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
               aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
             >
               {showPassword ? (
@@ -219,7 +219,7 @@ export function LoginForm() {
             </button>
           </div>
           {errors.password && (
-            <p className="text-xs font-medium text-red-700" role="alert">
+            <p className="text-xs font-medium text-red-700 dark:text-red-400" role="alert">
               {errors.password.message}
             </p>
           )}
@@ -243,8 +243,8 @@ export function LoginForm() {
 
       {/* Divisor "ou" */}
       <div className="relative flex items-center justify-center">
-        <div className="w-full border-t border-slate-200" />
-        <span className="absolute bg-white px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+        <div className="w-full border-t border-slate-200 dark:border-slate-800" />
+        <span className="absolute bg-white px-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:bg-slate-950 dark:text-slate-400">
           ou
         </span>
       </div>
@@ -255,7 +255,7 @@ export function LoginForm() {
         variant="outline"
         onClick={handleGoogleLogin}
         disabled={isBusy}
-        className="h-11 w-full gap-2.5 rounded-xl border-slate-200 bg-white text-sm font-semibold text-slate-700 transition-colors duration-150 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-emerald-600"
+        className="h-11 w-full gap-2.5 rounded-xl border-slate-200 bg-white text-sm font-semibold text-slate-700 transition-colors duration-150 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-emerald-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
       >
         {isGoogleLoading ? (
           <Loader2 className="size-4 animate-spin" aria-hidden />
@@ -283,11 +283,11 @@ export function LoginForm() {
       </Button>
 
       {/* Link para Cadastro */}
-      <p className="text-center text-sm text-slate-600">
+      <p className="text-center text-sm text-slate-600 dark:text-slate-400">
         Ainda não tem conta?{" "}
         <Link
           href={`/cadastro${rawCallbackUrl ? `?callbackUrl=${encodeURIComponent(targetUrl)}` : ""}`}
-          className="rounded-md font-bold text-emerald-700 hover:text-emerald-800 hover:underline focus-visible:outline-2 focus-visible:outline-emerald-600"
+          className="rounded-md font-bold text-emerald-700 hover:text-emerald-800 hover:underline focus-visible:outline-2 focus-visible:outline-emerald-600 dark:text-emerald-400 dark:hover:text-emerald-300"
         >
           Criar conta
         </Link>
@@ -295,14 +295,14 @@ export function LoginForm() {
 
       {/* Suporte (sem serviço de e-mail transacional configurado) */}
       {supportUrl && (
-        <div className="border-t border-slate-100 pt-4 text-center">
+        <div className="border-t border-slate-100 pt-4 text-center dark:border-slate-800">
           <a
             href={supportUrl}
             target={supportUrl.startsWith("http") ? "_blank" : undefined}
             rel={supportUrl.startsWith("http") ? "noopener noreferrer" : undefined}
-            className="inline-flex items-center gap-1.5 rounded-md text-xs font-medium text-slate-600 transition-colors hover:text-emerald-700 focus-visible:outline-2 focus-visible:outline-emerald-600"
+            className="inline-flex items-center gap-1.5 rounded-md text-xs font-medium text-slate-600 transition-colors hover:text-emerald-700 focus-visible:outline-2 focus-visible:outline-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400"
           >
-            <MessageCircle className="size-3.5 text-emerald-600" aria-hidden />
+            <MessageCircle className="size-3.5 text-emerald-600 dark:text-emerald-400" aria-hidden />
             Precisa de ajuda? Fale com o suporte
           </a>
         </div>

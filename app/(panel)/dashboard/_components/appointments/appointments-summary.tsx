@@ -35,42 +35,42 @@ export function AppointmentsSummary({
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-      <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
+      <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
         <CardContent className="flex items-center gap-3.5 p-4">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+          <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
             <CalendarDays className="size-5" />
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500">Agendamentos</p>
-            <p className="text-xl font-extrabold text-emerald-950">{totalCount}</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Agendamentos</p>
+            <p className="text-xl font-extrabold text-emerald-950 dark:text-emerald-50">{totalCount}</p>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
+      <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
         <CardContent className="flex items-center gap-3.5 p-4">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-teal-50 text-teal-600">
+          <div className="flex size-11 items-center justify-center rounded-xl bg-teal-50 text-teal-600 dark:bg-teal-500/15 dark:text-teal-400">
             <Clock className="size-5" />
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
               {isToday ? "Próximos hoje" : "Previstos"}
             </p>
-            <p className="text-xl font-extrabold text-emerald-950">
+            <p className="text-xl font-extrabold text-emerald-950 dark:text-emerald-50">
               {upcomingCount}
             </p>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs">
+      <Card className="rounded-2xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
         <CardContent className="flex items-center gap-3.5 p-4">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+          <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400">
             <DollarSign className="size-5" />
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-500">Faturamento estimado</p>
-            <p className="text-xl font-extrabold text-emerald-950">
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Faturamento estimado</p>
+            <p className="text-xl font-extrabold text-emerald-950 dark:text-emerald-50">
               {formatCurrency(totalRevenue)}
             </p>
           </div>

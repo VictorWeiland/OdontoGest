@@ -41,6 +41,10 @@ export async function GET(request: NextRequest) {
             })
         }
 
+        if (!user.status) {
+            return NextResponse.json(user.times)
+        }
+
         const appointments = await prisma.appointment.findMany({
             where: {
                 userId: userId,

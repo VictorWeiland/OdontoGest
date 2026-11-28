@@ -46,6 +46,8 @@ import {
   formatDurationLabel,
   formatToSaoPauloIso,
   getSaoPauloToday,
+  getWeekdayLabel,
+  isClinicOpenOnDate,
   isSlotInThePast,
   isSlotSequenceAvailable,
 } from "@/lib/schedule-utils"
@@ -160,6 +162,11 @@ export function QuickAppointmentProvider({
     return Math.ceil(selectedService.duration / 30)
   }, [selectedService])
 
+  const isSelectedDateOpen = useMemo(() => {
+    if (!contextData || !selectedDate) return true
+    return isClinicOpenOnDate(selectedDate, contextData.workingDays)
+  }, [contextData, selectedDate])
+
   const openQuickAppointment = useCallback(
     async (options?: OpenQuickAppointmentOptions) => {
       const currentTodayIso = formatToSaoPauloIso(getSaoPauloToday())
@@ -223,7 +230,14 @@ export function QuickAppointmentProvider({
 
   // Carrega horários ocupados sempre que abrir, mudar a data ou recarregar após conflito
   useEffect(() => {
-    if (!open || !contextData?.clinicId || !selectedDate) return
+    if (
+      !open ||
+      !contextData?.clinicId ||
+      !selectedDate ||
+      !isClinicOpenOnDate(selectedDate, contextData.workingDays)
+    ) {
+      return
+    }
 
     let active = true
 
@@ -408,6 +422,23 @@ export function QuickAppointmentProvider({
         </Button>
       </Link>
     </div>
+  ) : contextData && contextData.workingDays.length === 0 ? (
+    <div className="space-y-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-center dark:border-slate-800 dark:bg-slate-900/70">
+      <Calendar className="mx-auto size-8 text-emerald-600 dark:text-emerald-400" aria-hidden />
+      <div>
+        <h3 className="text-base font-bold text-emerald-950 dark:text-emerald-50">
+          Nenhum dia da semana configurado
+        </h3>
+        <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
+          Selecione os dias em que o consultório abre no seu perfil antes de agendar.
+        </p>
+      </div>
+      <Link href="/dashboard/profile" onClick={() => setOpen(false)}>
+        <Button className="rounded-xl bg-emerald-500 font-semibold text-white hover:bg-emerald-600">
+          Configurar dias de atendimento
+        </Button>
+      </Link>
+    </div>
   ) : contextData ? (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
       <div aria-live="polite">
@@ -535,19 +566,25 @@ export function QuickAppointmentProvider({
           )}
         </div>
 
-        <QuickTimeSlotPicker
-          clinicTimes={contextData.times}
-          blockedTimes={blockedTimes}
-          requiredSlots={requiredSlots}
-          selectedDateIso={selectedDate}
-          selectedTime={selectedTime}
-          loading={loadingSlots}
-          onSelectTime={(time) => {
-            setValue("time", time, { shouldValidate: true })
-            setSubmitError(null)
-          }}
-          errorMessage={errors.time?.message}
-        />
+        {!isSelectedDateOpen ? (
+          <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50/70 px-3.5 py-4 text-xs font-medium text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/30 dark:text-amber-200">
+            O consultório não abre neste dia ({getWeekdayLabel(selectedDate)}). Escolha outro dia da semana.
+          </div>
+        ) : (
+          <QuickTimeSlotPicker
+            clinicTimes={contextData.times}
+            blockedTimes={blockedTimes}
+            requiredSlots={requiredSlots}
+            selectedDateIso={selectedDate}
+            selectedTime={selectedTime}
+            loading={loadingSlots}
+            onSelectTime={(time) => {
+              setValue("time", time, { shouldValidate: true })
+              setSubmitError(null)
+            }}
+            errorMessage={errors.time?.message}
+          />
+        )}
       </div>
 
       {/* Resumo antes de confirmar */}
@@ -604,7 +641,7 @@ export function QuickAppointmentProvider({
         </Button>
         <Button
           type="submit"
-          disabled={isSubmitting || loadingSlots}
+          disabled={isSubmitting || loadingSlots || !isSelectedDateOpen}
           className="h-10 gap-2 rounded-xl bg-emerald-500 px-5 text-sm font-bold text-white shadow-xs shadow-emerald-500/25 transition-colors hover:bg-emerald-600 focus-visible:ring-2 focus-visible:ring-emerald-600 sm:min-w-36"
         >
           {isSubmitting ? (

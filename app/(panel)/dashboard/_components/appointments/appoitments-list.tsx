@@ -5,7 +5,12 @@ import { useSearchParams } from "next/navigation"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { formatToSaoPauloIso, getSaoPauloToday } from "@/lib/schedule-utils"
+import {
+  formatToSaoPauloIso,
+  getSaoPauloToday,
+  getWeekdayLabel,
+  isClinicOpenOnDate,
+} from "@/lib/schedule-utils"
 import { Prisma } from "@/lib/generated/prisma/client"
 import { Button } from "@/components/ui/button"
 import {
@@ -43,6 +48,7 @@ interface AppointmentsListProps {
   times: string[]
   userId?: string
   clinicStatus?: boolean
+  workingDays?: number[]
 }
 
 function getInitials(name?: string | null) {
@@ -60,7 +66,7 @@ function calculateEndTime(startTime: string, durationMinutes: number): string {
   return `${String(endH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`
 }
 
-export function AppointmentsList({ times, userId, clinicStatus = true }: AppointmentsListProps) {
+export function AppointmentsList({ times, userId, clinicStatus = true, workingDays }: AppointmentsListProps) {
   const searchParams = useSearchParams()
   const dateParam = searchParams.get("date")
   const queryClient = useQueryClient()
@@ -73,6 +79,11 @@ export function AppointmentsList({ times, userId, clinicStatus = true }: Appoint
   const activeDate = useMemo(() => {
     return dateParam || formatToSaoPauloIso(getSaoPauloToday())
   }, [dateParam])
+
+  const isOpenOnActiveDate = useMemo(() => {
+    if (!workingDays) return true
+    return isClinicOpenOnDate(activeDate, workingDays)
+  }, [activeDate, workingDays])
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["get-appointments", activeDate],
@@ -160,7 +171,7 @@ export function AppointmentsList({ times, userId, clinicStatus = true }: Appoint
           </CardHeader>
 
           <CardContent className="p-4 sm:p-6">
-            {!clinicStatus && (
+            {!clinicStatus ? (
               <div className="mb-4 flex flex-col gap-2 rounded-2xl border border-rose-200 bg-rose-50/70 px-4 py-3 text-xs text-rose-800 sm:flex-row sm:items-center sm:justify-between dark:border-rose-500/30 dark:bg-rose-950/30 dark:text-rose-200">
                 <span>
                   <strong>Clínica fechada temporariamente:</strong> novos agendamentos online e rápidos estão bloqueados.
@@ -170,6 +181,18 @@ export function AppointmentsList({ times, userId, clinicStatus = true }: Appoint
                   className="shrink-0 font-bold text-rose-900 underline underline-offset-2 hover:text-rose-700 dark:text-rose-300 dark:hover:text-rose-100"
                 >
                   Ativar em Meu Perfil
+                </Link>
+              </div>
+            ) : !isOpenOnActiveDate && (
+              <div className="mb-4 flex flex-col gap-2 rounded-2xl border border-amber-200 bg-amber-50/70 px-4 py-3 text-xs text-amber-900 sm:flex-row sm:items-center sm:justify-between dark:border-amber-500/30 dark:bg-amber-950/30 dark:text-amber-200">
+                <span>
+                  <strong>Consultório fechado neste dia ({getWeekdayLabel(activeDate)}):</strong> novos agendamentos estão bloqueados para esta data.
+                </span>
+                <Link
+                  href="/dashboard/profile"
+                  className="shrink-0 font-bold text-amber-950 underline underline-offset-2 hover:text-amber-700 dark:text-amber-300 dark:hover:text-amber-100"
+                >
+                  Alterar dias em Meu Perfil
                 </Link>
               </div>
             )}
@@ -321,7 +344,7 @@ export function AppointmentsList({ times, userId, clinicStatus = true }: Appoint
                           </span>
                         </div>
 
-                        {userId && clinicStatus && (
+                        {userId && clinicStatus && isOpenOnActiveDate && (
                           <button
                             type="button"
                             onClick={() =>

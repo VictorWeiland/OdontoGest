@@ -40,6 +40,7 @@ export async function getQuickAppointmentContext(): Promise<{
           name: true,
           status: true,
           times: true,
+          workingDays: true,
         },
       }),
       prisma.service.findMany({
@@ -100,6 +101,7 @@ export async function getQuickAppointmentContext(): Promise<{
         clinicName: clinic.name || "OdontoGEST",
         clinicStatus: clinic.status,
         times: clinic.times,
+        workingDays: clinic.workingDays,
         services,
         patients,
       },

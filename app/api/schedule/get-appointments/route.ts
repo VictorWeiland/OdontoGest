@@ -2,7 +2,7 @@
 
 import prisma from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
-import { computeBlockedSlots, parseUtcDateRange } from '@/lib/schedule-utils'
+import { computeBlockedSlots, isClinicOpenOnDate, parseUtcDateRange } from '@/lib/schedule-utils'
 
 export async function GET(request: NextRequest) {
     const { searchParams } = request.nextUrl
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
             })
         }
 
-        if (!user.status) {
+        if (!user.status || !isClinicOpenOnDate(dateParam, user.workingDays)) {
             return NextResponse.json(user.times)
         }
 

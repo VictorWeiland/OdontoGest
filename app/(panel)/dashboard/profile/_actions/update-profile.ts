@@ -11,7 +11,8 @@ const formSchema = z.object({
     phone: z.string().optional(),
     status: z.boolean(),
     timeZone: z.string(),
-    times: z.array(z.string())
+    times: z.array(z.string()),
+    workingDays: z.array(z.number().int().min(0).max(6)),
 })
 
 type FormSchema = z.infer<typeof formSchema>
@@ -32,6 +33,10 @@ export async function updateProfile(formData: FormSchema){
         }
     }
 
+    const normalizedWorkingDays = Array.from(
+        new Set(schema.data.workingDays)
+    ).sort((a, b) => a - b)
+
     try{
         await prisma.user.update({
             where:{
@@ -43,7 +48,8 @@ export async function updateProfile(formData: FormSchema){
                 phone: formData.phone,
                 status: formData.status,
                 timeZone: formData.timeZone,
-                times: formData.times || []              
+                times: formData.times || [],
+                workingDays: normalizedWorkingDays,
             }
         })
 

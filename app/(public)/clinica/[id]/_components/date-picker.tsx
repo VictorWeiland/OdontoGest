@@ -11,6 +11,7 @@ interface DateTimePickerProps {
   minDate?: Date
   className?: string
   initialDate?: Date
+  filterDate?: (date: Date) => boolean
   onChange: (date: Date) => void
 }
 
@@ -18,6 +19,7 @@ export function DateTimePicker({
   initialDate,
   className,
   minDate,
+  filterDate,
   onChange,
 }: DateTimePickerProps) {
   const [startDate, setStartDate] = useState(initialDate || getSaoPauloToday())
@@ -36,6 +38,7 @@ export function DateTimePicker({
         selected={startDate}
         locale="pt-BR"
         minDate={minDate ?? getSaoPauloToday()}
+        filterDate={filterDate}
         onChange={handleChange}
         dateFormat="dd/MM/yyyy"
       />

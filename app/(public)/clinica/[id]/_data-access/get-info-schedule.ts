@@ -12,6 +12,7 @@ export type PublicClinicSchedule = Prisma.UserGetPayload<{
     image: true
     status: true
     times: true
+    workingDays: true
     services: {
       select: {
         id: true
@@ -44,6 +45,7 @@ export async function getInfoSchedule({
       image: true,
       status: true,
       times: true,
+      workingDays: true,
       services: {
         where: {
           status: true,

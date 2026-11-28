@@ -3,6 +3,88 @@
  * Garante compatibilidade estrita com o fuso America/Sao_Paulo.
  */
 
+export const WEEKDAY_OPTIONS = [
+  { value: 1, short: "Seg", label: "Segunda-feira" },
+  { value: 2, short: "Ter", label: "Terça-feira" },
+  { value: 3, short: "Qua", label: "Quarta-feira" },
+  { value: 4, short: "Qui", label: "Quinta-feira" },
+  { value: 5, short: "Sex", label: "Sexta-feira" },
+  { value: 6, short: "Sáb", label: "Sábado" },
+  { value: 0, short: "Dom", label: "Domingo" },
+] as const
+
+export const DEFAULT_WORKING_DAYS = [1, 2, 3, 4, 5] as const
+
+export function getWeekdayFromDateInput(dateInput: Date | string): number | null {
+  const isoDate =
+    typeof dateInput === "string" ? dateInput : formatToSaoPauloIso(dateInput)
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) {
+    return null
+  }
+
+  const [year, month, day] = isoDate.split("-").map(Number)
+  const utcDate = new Date(Date.UTC(year, month - 1, day, 12, 0, 0))
+  if (
+    Number.isNaN(utcDate.getTime()) ||
+    utcDate.getUTCFullYear() !== year ||
+    utcDate.getUTCMonth() !== month - 1 ||
+    utcDate.getUTCDate() !== day
+  ) {
+    return null
+  }
+
+  return utcDate.getUTCDay()
+}
+
+export function isClinicOpenOnDate(
+  dateInput: Date | string,
+  workingDays: readonly number[] | null | undefined
+): boolean {
+  if (!workingDays || workingDays.length === 0) {
+    return false
+  }
+  const weekday = getWeekdayFromDateInput(dateInput)
+  if (weekday === null) {
+    return false
+  }
+  return workingDays.includes(weekday)
+}
+
+export function getNextOpenDate(
+  startDate: Date,
+  workingDays: readonly number[] | null | undefined,
+  maxLookaheadDays = 60
+): Date {
+  if (!workingDays || workingDays.length === 0) {
+    return startDate
+  }
+
+  const startIso = formatToSaoPauloIso(startDate)
+  const [year, month, day] = startIso.split("-").map(Number)
+
+  for (let offset = 0; offset <= maxLookaheadDays; offset++) {
+    const candidateUtc = new Date(Date.UTC(year, month - 1, day + offset, 12, 0, 0))
+    if (workingDays.includes(candidateUtc.getUTCDay())) {
+      return new Date(
+        candidateUtc.getUTCFullYear(),
+        candidateUtc.getUTCMonth(),
+        candidateUtc.getUTCDate(),
+        12,
+        0,
+        0
+      )
+    }
+  }
+
+  return startDate
+}
+
+export function getWeekdayLabel(dateInput: Date | string): string {
+  const weekday = getWeekdayFromDateInput(dateInput)
+  return WEEKDAY_OPTIONS.find((day) => day.value === weekday)?.label ?? ""
+}
+
 export function getSaoPauloToday(): Date {
   const parts = Object.fromEntries(
     new Intl.DateTimeFormat("en-CA", {
@@ -132,7 +214,14 @@ export function parseUtcDateRange(dateStr: string): {
   if (!year || !month || !day) return null
 
   const appointmentDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0))
-  if (Number.isNaN(appointmentDate.getTime())) return null
+  if (
+    Number.isNaN(appointmentDate.getTime()) ||
+    appointmentDate.getUTCFullYear() !== year ||
+    appointmentDate.getUTCMonth() !== month - 1 ||
+    appointmentDate.getUTCDate() !== day
+  ) {
+    return null
+  }
 
   return {
     appointmentDate,

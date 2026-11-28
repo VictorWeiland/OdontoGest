@@ -42,6 +42,7 @@ import { toast } from "sonner"
 import { formatPhone } from "@/utils/formatPhone"
 import { AvatarProfile } from "./profile-avatar"
 import { Badge } from "@/components/ui/badge"
+import { DEFAULT_WORKING_DAYS, WEEKDAY_OPTIONS } from "@/lib/schedule-utils"
 
 const statusOptions = [
   { label: "Aberta (recebendo agendamentos)", value: "active" },
@@ -74,6 +75,9 @@ export function ProfileContent({ user }: ProfileContentProps) {
   const [selectedHours, setSelectedHours] = React.useState<string[]>(
     user.times ?? []
   )
+  const [selectedWorkingDays, setSelectedWorkingDays] = React.useState<number[]>(
+    user.workingDays ?? [...DEFAULT_WORKING_DAYS]
+  )
   const [dialogIsOpen, setDialogIsOpen] = React.useState(false)
   const [saving, setSaving] = React.useState(false)
 
@@ -84,6 +88,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
     status: user.status,
     timeZone: user.timeZone,
     times: user.times,
+    workingDays: user.workingDays ?? [...DEFAULT_WORKING_DAYS],
   })
 
   function generateTimeSlots(): string[] {
@@ -108,6 +113,14 @@ export function ProfileContent({ user }: ProfileContentProps) {
     )
   }
 
+  function toggleWorkingDay(dayValue: number) {
+    setSelectedWorkingDays((prev) =>
+      prev.includes(dayValue)
+        ? prev.filter((day) => day !== dayValue)
+        : [...prev, dayValue]
+    )
+  }
+
   function handleSelectAll() {
     setSelectedHours(allAvailableSlots)
   }
@@ -126,6 +139,7 @@ export function ProfileContent({ user }: ProfileContentProps) {
         phone: values.phone,
         timeZone: values.timeZone,
         times: selectedHours || [],
+        workingDays: selectedWorkingDays,
       })
 
       if (response.error) {
@@ -297,7 +311,52 @@ export function ProfileContent({ user }: ProfileContentProps) {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-4 p-6">
+            <CardContent className="space-y-5 p-6">
+              {/* Dias da semana de atendimento */}
+              <div className="space-y-2.5 border-b border-slate-100 pb-5 dark:border-slate-800">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    Dias de atendimento na semana:
+                  </span>
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                    {selectedWorkingDays.length}{" "}
+                    {selectedWorkingDays.length === 1 ? "dia selecionado" : "dias selecionados"}
+                  </span>
+                </div>
+
+                <div
+                  role="group"
+                  aria-label="Dias da semana em que o consultório abre"
+                  className="grid grid-cols-4 gap-2 sm:grid-cols-7"
+                >
+                  {WEEKDAY_OPTIONS.map((day) => {
+                    const isOpen = selectedWorkingDays.includes(day.value)
+                    return (
+                      <button
+                        key={day.value}
+                        type="button"
+                        aria-pressed={isOpen}
+                        title={day.label}
+                        onClick={() => toggleWorkingDay(day.value)}
+                        className={`rounded-xl py-2 text-xs font-bold transition-all duration-150 focus-visible:outline-2 focus-visible:outline-emerald-600 ${
+                          isOpen
+                            ? "border border-emerald-500 bg-emerald-500 text-white shadow-2xs shadow-emerald-500/25 hover:bg-emerald-600"
+                            : "border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:bg-emerald-50/50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:border-emerald-500/40 dark:hover:text-slate-200"
+                        }`}
+                      >
+                        {day.short}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {selectedWorkingDays.length === 0 && (
+                  <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50/50 p-3 text-center text-xs text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+                    Nenhum dia da semana selecionado. Pacientes não conseguirão agendar em nenhum dia.
+                  </div>
+                )}
+              </div>
+
               {selectedHours.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50/50 p-4 text-center text-xs text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
                   Nenhum horário de atendimento selecionado. Pacientes não conseguirão agendar horários online.

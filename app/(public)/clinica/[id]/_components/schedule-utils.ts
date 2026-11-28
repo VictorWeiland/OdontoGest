@@ -8,4 +8,7 @@ export {
   isSameDayInSaoPaulo,
   isSlotInThePast,
   isSlotSequenceAvailable,
+  isClinicOpenOnDate,
+  getNextOpenDate,
+  getWeekdayLabel,
 } from "@/lib/schedule-utils"

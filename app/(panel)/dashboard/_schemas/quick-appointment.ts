@@ -49,6 +49,7 @@ export interface QuickAppointmentContextData {
   clinicName: string
   clinicStatus: boolean
   times: string[]
+  workingDays: number[]
   services: QuickAppointmentService[]
   patients: QuickAppointmentPatient[]
 }

@@ -86,6 +86,7 @@ model User {
   timeZone           String?   @map("timeZone")
   stripe_custumer_id String?
   times              String[]  @default([])
+  workingDays        Int[]     @default([1, 2, 3, 4, 5])
   isDemo             Boolean   @default(false) @map("is_demo") // clínica fictícia de demonstração
   specialties        String[]  @default([])
 

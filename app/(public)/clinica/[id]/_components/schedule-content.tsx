@@ -37,7 +37,10 @@ import { createNewAppointment } from "../_actions/create-appointment"
 import { toast } from "sonner"
 import {
   formatToSaoPauloIso,
+  getNextOpenDate,
   getSaoPauloToday,
+  getWeekdayLabel,
+  isClinicOpenOnDate,
 } from "./schedule-utils"
 import { formatCurrency } from "@/utils/formatCurrency"
 import { Badge } from "@/components/ui/badge"
@@ -102,9 +105,16 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
     return Math.ceil(activeService.duration / 30)
   }, [activeService])
 
+  const hasOpenWeekdays = clinic.workingDays.length > 0
+  const isSelectedDateOpen = useMemo(() => {
+    return isClinicOpenOnDate(selectedDate || getSaoPauloToday(), clinic.workingDays)
+  }, [selectedDate, clinic.workingDays])
+
   // Busca horários ocupados ao alterar a data no fuso America/Sao_Paulo
   useEffect(() => {
-    if (!selectedDate || !clinic.status) return
+    if (!selectedDate || !clinic.status || !hasOpenWeekdays || !isSelectedDateOpen) {
+      return
+    }
 
     let isCurrentRequest = true
 
@@ -165,10 +175,14 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
     return () => {
       isCurrentRequest = false
     }
-  }, [selectedDate, clinic.id, clinic.times, clinic.status])
+  }, [selectedDate, clinic.id, clinic.times, clinic.status, hasOpenWeekdays, isSelectedDateOpen])
 
   async function handleProceedToStep2(serviceId: string) {
     setValue("serviceId", serviceId)
+    const currentDate = selectedDate || getSaoPauloToday()
+    if (!isClinicOpenOnDate(currentDate, clinic.workingDays)) {
+      setValue("date", getNextOpenDate(currentDate, clinic.workingDays))
+    }
     setSelectedTime("")
     setCurrentStep(2)
   }
@@ -176,6 +190,10 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
   async function handleProceedToStep3() {
     if (!selectedDate) {
       toast.error("Por favor, selecione uma data para o atendimento.")
+      return
+    }
+    if (!isClinicOpenOnDate(selectedDate, clinic.workingDays)) {
+      toast.error("A clínica não atende neste dia da semana. Escolha outra data.")
       return
     }
     if (!selectedTime) {
@@ -337,7 +355,7 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
           </div>
 
           {/* Seletor de modo (Agendamento normal ou Triagem de Urgência) */}
-          {clinic.status && canUsePriorityTriage && (
+          {clinic.status && hasOpenWeekdays && canUsePriorityTriage && (
             <div className="mt-5 flex justify-center border-t border-slate-100 pt-5 dark:border-slate-800">
               <div
                 role="tablist"
@@ -378,7 +396,7 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
           )}
 
           {/* Stepper / Indicador de Progresso em 3 Passos */}
-          {clinic.status && activeMode === "schedule" && (
+          {clinic.status && hasOpenWeekdays && activeMode === "schedule" && (
           <div className={canUsePriorityTriage ? "mt-5 pt-2" : "mt-6 border-t border-slate-100 pt-5 dark:border-slate-800"}>
             <div className="flex items-center justify-between max-w-md mx-auto">
               {[
@@ -420,7 +438,7 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
 
       {/* Conteúdo Principal do Fluxo */}
       <div className="mx-auto max-w-3xl px-4 sm:px-6 pt-8">
-        {!clinic.status ? (
+        {!clinic.status || !hasOpenWeekdays ? (
           <EmptyState
             icon={Clock}
             title="Agendamentos temporariamente pausados"
@@ -557,8 +575,10 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
               </label>
               <div className="max-w-xs">
                 <DateTimePicker
+                  key={formatToSaoPauloIso(selectedDate || getSaoPauloToday())}
                   initialDate={selectedDate || getSaoPauloToday()}
                   minDate={getSaoPauloToday()}
+                  filterDate={(date) => isClinicOpenOnDate(date, clinic.workingDays)}
                   onChange={(date) => {
                     setValue("date", date)
                     setSelectedTime("")
@@ -581,7 +601,13 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
                 )}
               </div>
 
-              {loadingSlots ? (
+              {!isSelectedDateOpen ? (
+                <EmptyState
+                  icon={Clock}
+                  title="Consultório fechado neste dia"
+                  description={`A clínica não realiza atendimentos (${getWeekdayLabel(selectedDate || getSaoPauloToday())}). Escolha outro dia no calendário acima.`}
+                />
+              ) : loadingSlots ? (
                 <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <Skeleton key={i} className="h-10 rounded-xl" />
@@ -619,7 +645,7 @@ export function ScheduleContent({ clinic }: ScheduleContentProps) {
 
               <Button
                 type="button"
-                disabled={!selectedTime}
+                disabled={!selectedTime || !isSelectedDateOpen}
                 onClick={handleProceedToStep3}
                 className="gap-2 rounded-xl bg-emerald-500 font-bold text-white hover:bg-emerald-600 shadow-xs"
               >

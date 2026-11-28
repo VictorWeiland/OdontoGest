@@ -7,6 +7,7 @@
     "build": "prisma generate && npx prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --import ./lib/__tests__/alias-loader.mjs --test lib/__tests__/*.test.mjs",
     "postinstall": "prisma generate",
     "stripe:listen": "stripe listen --events customer.subscription.deleted,customer.subscription.updated,checkout.session.completed --forward-to localhost:3000/api/webhook"
   },

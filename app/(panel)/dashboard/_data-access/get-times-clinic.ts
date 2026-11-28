@@ -8,6 +8,7 @@ export async function getTimesClinic({ userId }: { userId: string }) {
             times:[],
             userId: "",
             status: false,
+            workingDays: [] as number[],
         }
     }
 
@@ -20,6 +21,7 @@ export async function getTimesClinic({ userId }: { userId: string }) {
                 id: true,
                 times: true,
                 status: true,
+                workingDays: true,
             }
         })
         if(!user){
@@ -27,12 +29,14 @@ export async function getTimesClinic({ userId }: { userId: string }) {
                 times: [],
                 userId: "",
                 status: false,
+                workingDays: [] as number[],
             }
         }
         return{
             times: user.times,
             userId: user.id,
             status: user.status,
+            workingDays: user.workingDays,
         }
     } catch (err) {
         console.error(err);
@@ -40,6 +44,7 @@ export async function getTimesClinic({ userId }: { userId: string }) {
             times:[],
             userId: "",
             status: false,
+            workingDays: [] as number[],
         }
     }
 }

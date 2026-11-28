@@ -11,6 +11,7 @@ interface UseProfileFormProps{
     status: boolean | null;
     timeZone: string | null;
     times: string[] | null;
+    workingDays: number[] | null;
 }
 
 const profileSchema = z.object({
@@ -19,12 +20,13 @@ const profileSchema = z.object({
     phone: z.string().optional(),
     status: z.string(),
     timeZone: z.string().min(1,{message: "O Time zone é obrigatorio"}),
-    times: z.array(z.string())
+    times: z.array(z.string()),
+    workingDays: z.array(z.number().int().min(0).max(6))
 })
 
 export type ProfileFormData = z.infer<typeof profileSchema>;
 
-export function useProfileForm({name, address, phone, status, timeZone, times}: UseProfileFormProps){
+export function useProfileForm({name, address, phone, status, timeZone, times, workingDays}: UseProfileFormProps){
     return useForm<ProfileFormData>({
         resolver: zodResolver(profileSchema),
         defaultValues:{
@@ -33,7 +35,8 @@ export function useProfileForm({name, address, phone, status, timeZone, times}: 
             phone: phone || "",
             status: status ? "active" : "inactive",
             timeZone: timeZone || "",            
-            times: times || [],            
+            times: times || [],
+            workingDays: workingDays ?? [1, 2, 3, 4, 5],
         }
     })
 }
